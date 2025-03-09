@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+}
+
+.app {
+  .header-nav {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 48px;
+    background-color: #E5E7EB; // equivalent to bg-gray-200
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); // equivalent to shadow
+
+    button {
+      width: 50%; // equivalent to w-1/2
+      height: 100%; // equivalent to h-full
+      border: none;
+
+      &:hover {
+        background-color: #D1D5DB; // adding hover state
+      }
+
+      &:focus {
+        outline: none;
+        background-color: #D1D5DB;
+      }
+
+      &.selected {
+        background-color: #D1D5DB;
+      }
+    }
+  }
+}

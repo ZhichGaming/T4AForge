@@ -1,0 +1,230 @@
+.form {
+  max-width: 800px;
+  // margin: 0 auto;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+
+  .form-section {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 0.5rem;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+
+    label {
+      display: block;
+      color: #495057;
+      font-weight: 500;
+
+      span {
+        margin-bottom: 1rem;
+      }
+    }
+
+    .field-title {
+      // margin: 0;
+      padding: 0;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      // margin: 0;
+      border-bottom: 1px dotted #000;
+      cursor: help;
+
+      .tooltiptext {
+        visibility: hidden;
+        width: 300px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 10px;
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        top: 5px;
+        left: 105%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 0.9em;
+        font-weight: normal;
+
+        &::after {
+          content: "";
+          position: absolute;
+          right: 100%;
+          top: 50%;
+          // margin-left: -5px;
+          transform: rotate(90deg);
+          border-width: 5px;
+          border-style: solid;
+          border-color: #333 transparent transparent transparent;
+        }
+      }
+
+      &:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    select,
+    textarea {
+      display: block;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    select {
+      background-color: white;
+    }
+  }
+
+  .other-field-input-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    .remove-other-field-button {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      max-width: 100px;
+    }
+  }
+
+  .add-other-field {
+    display: flex;
+    gap: 10px;
+  }
+
+  .add-other-field-select {
+    max-width: 300px;
+  }
+
+  .add-other-field-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+
+  .add-other-field-button:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: auto;
+  }
+
+  input:required {
+    border-color: black;
+    border-width: 2px;
+    background-color: #fff;
+  }
+
+  input:required:invalid {
+    border-color: #e74c3c;
+  }
+  button {
+    background-color: #fff;
+    border: 1px solid #d5d9d9;
+    border-radius: 8px;
+    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+    box-sizing: border-box;
+    color: #0f1111;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Amazon Ember",sans-serif;
+    font-size: 13px;
+    line-height: 29px;
+    padding: 0 10px 0 11px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    width: 100px;
+
+    &:hover {
+      background-color: #f7fafa;
+    }
+
+    &:focus {
+      border-color: #008296;
+      box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+      outline: 0;
+    }
+  }
+
+  // button {
+  //   display: block;
+  //   width: 100%;
+  //   padding: 1rem;
+  //   background-color: #007bff;
+  //   color: white;
+  //   border: none;
+  //   border-radius: 4px;
+  //   font-size: 16px;
+  //   cursor: pointer;
+  //   transition: background-color 0.2s;
+
+  //   &:hover {
+  //     background-color: #0056b3;
+  //   }
+
+  //   &:active {
+  //     background-color: #004085;
+  //   }
+  // }
+
+  .error-message {
+    color: red;
+  }
+
+  .success-message {
+    color: green;
+  }
+}
