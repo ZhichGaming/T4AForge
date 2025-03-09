@@ -4,36 +4,14 @@ import './Form.scss';
 import T619FormData from '../types/T619.types';
 
 function T619Form({
-  sendFormData,
+  formData,
+  setFormData,
   nextStep,
 }: {
-  sendFormData: (formData: T619FormData) => void;
+  formData: T619FormData;
+  setFormData: React.Dispatch<React.SetStateAction<T619FormData>>;
   nextStep: () => void;
 }) {
-  const [formData, setFormData] = useState<T619FormData>({
-    accountType: 'bn9',
-    bn9: '',
-    bn15: '',
-    trust: '',
-    nr4: '',
-    RepID: '',
-    sbmt_ref_id: '',
-    summ_cnt: '',
-    lang_cd: 'E',
-    transmitterName: {
-      l1_nm: '',
-    },
-    TransmitterCountryCode: 'CAN',
-    contact: {
-      cntc_nm: '',
-      cntc_area_cd: '',
-      cntc_phn_nbr: '',
-      cntc_extn_nbr: '',
-      cntc_email_area: '',
-      sec_cntc_email_area: '',
-    },
-  });
-
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (
@@ -104,7 +82,6 @@ function T619Form({
       return;
     }
 
-    sendFormData(formData);
     nextStep();
   };
 

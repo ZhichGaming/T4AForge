@@ -8,62 +8,17 @@ import './Form.scss';
 
 interface T4ASummaryProps {
   slips: T4ASlipData[];
-  sendSummaryData: (summaryData: T4ASummaryData) => void;
+  summaryData: T4ASummaryData;
+  setSummaryData: React.Dispatch<React.SetStateAction<T4ASummaryData>>;
   generateXML: () => void;
 }
 
-function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
-  const [formData, setFormData] = useState<T4ASummaryData>({
-    bn: '',
-    payerName: {
-      l1_nm: '',
-      l2_nm: '',
-      l3_nm: '',
-    },
-    payerAddress: {
-      addr_l1_txt: '',
-      addr_l2_txt: '',
-      cty_nm: '',
-      prov_cd: '',
-      cntry_cd: '',
-      pstl_cd: '',
-    },
-    contact: {
-      cntc_nm: '',
-      cntc_area_cd: '',
-      cntc_phn_nbr: '',
-      cntc_extn_nbr: '',
-    },
-    tx_yr: '',
-    slp_cnt: '',
-    rppNumber: {
-      rpp_rgst_1_nbr: '',
-      rpp_rgst_2_nbr: '',
-      rpp_rgst_3_nbr: '',
-    },
-    proprietorSin: {
-      pprtr_1_sin: '',
-      pprtr_2_sin: '',
-    },
-    rpt_tcd: 'O',
-    fileramendmentnote: '',
-    totalAmounts: {
-      tot_pens_spran_amt: '',
-      tot_lsp_amt: '',
-      tot_self_cmsn_amt: '',
-      tot_ptrng_aloc_amt: '',
-      tot_past_srvc_amt: '',
-      tot_annty_incamt: '',
-      totr_incamt: '',
-      tot_itx_dedn_amt: '',
-      tot_padj_amt: '',
-      tot_resp_aip_amt: '',
-      tot_resp_amt: '',
-      rpt_tot_fee_srvc_amt: '',
-      rpt_tot_oth_info_amt: '',
-    },
-  });
-
+function T4ASummary({
+  slips,
+  summaryData,
+  setSummaryData,
+  generateXML,
+}: T4ASummaryProps) {
   const [errorMessage, setErrorMessage] = useState('');
   const currencyToIntegerCents = (amount: string) => {
     let formattedAmount = amount;
@@ -160,7 +115,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
       ]),
     );
 
-    setFormData((prev) => ({
+    setSummaryData((prev) => ({
       ...prev,
       totalAmounts: {
         ...prev.totalAmounts,
@@ -168,7 +123,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
       },
       slp_cnt: slips.length.toString(),
     }));
-  }, [slips]);
+  }, [setSummaryData, slips]);
 
   const validateForm = (): {
     requiredErrors: string[];
@@ -215,7 +170,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
 
-      setFormData((prev: T4ASummaryData) => ({
+      setSummaryData((prev: T4ASummaryData) => ({
         ...prev,
         [parent]: {
           ...(prev[parent as keyof T4ASummaryData] as any),
@@ -223,7 +178,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
         },
       }));
     } else {
-      setFormData((prev: T4ASummaryData) => ({
+      setSummaryData((prev: T4ASummaryData) => ({
         ...prev,
         [name]: value,
       }));
@@ -249,7 +204,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
       return;
     }
 
-    sendSummaryData(formData);
+    setSummaryData(summaryData);
     setErrorMessage('');
     generateXML();
   };
@@ -272,7 +227,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="payerName.l1_nm"
               type="text"
               name="payerName.l1_nm"
-              value={formData.payerName.l1_nm}
+              value={summaryData.payerName.l1_nm}
               onChange={handleInputChange}
               maxLength={30}
               pattern="^.{1,30}$"
@@ -288,7 +243,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="payerName.l2_nm"
               type="text"
               name="payerName.l2_nm"
-              value={formData.payerName.l2_nm}
+              value={summaryData.payerName.l2_nm}
               onChange={handleInputChange}
               maxLength={30}
             />
@@ -302,7 +257,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="payerName.l3_nm"
               type="text"
               name="payerName.l3_nm"
-              value={formData.payerName.l3_nm}
+              value={summaryData.payerName.l3_nm}
               onChange={handleInputChange}
               maxLength={30}
             />
@@ -319,7 +274,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="payerAddress.addr_l1_txt"
               type="text"
               name="payerAddress.addr_l1_txt"
-              value={formData.payerAddress.addr_l1_txt}
+              value={summaryData.payerAddress.addr_l1_txt}
               onChange={handleInputChange}
               maxLength={30}
             />
@@ -336,7 +291,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="payerAddress.addr_l2_txt"
               type="text"
               name="payerAddress.addr_l2_txt"
-              value={formData.payerAddress.addr_l2_txt}
+              value={summaryData.payerAddress.addr_l2_txt}
               onChange={handleInputChange}
               maxLength={30}
             />
@@ -353,7 +308,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="payerAddress.cty_nm"
               type="text"
               name="payerAddress.cty_nm"
-              value={formData.payerAddress.cty_nm}
+              value={summaryData.payerAddress.cty_nm}
               onChange={handleInputChange}
               maxLength={28}
             />
@@ -375,7 +330,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="payerAddress.prov_cd"
               type="text"
               name="payerAddress.prov_cd"
-              value={formData.payerAddress.prov_cd}
+              value={summaryData.payerAddress.prov_cd}
               onChange={handleInputChange}
               maxLength={2}
               pattern="^[A-Z]{2}$"
@@ -408,7 +363,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="payerAddress.cntry_cd"
               type="text"
               name="payerAddress.cntry_cd"
-              value={formData.payerAddress.cntry_cd}
+              value={summaryData.payerAddress.cntry_cd}
               onChange={handleInputChange}
               maxLength={3}
               pattern="^[A-Z]{3}$"
@@ -430,7 +385,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="payerAddress.pstl_cd"
               type="text"
               name="payerAddress.pstl_cd"
-              value={formData.payerAddress.pstl_cd}
+              value={summaryData.payerAddress.pstl_cd}
               onChange={handleInputChange}
               maxLength={10}
               pattern="^[a-zA-Z0-9]{10}$"
@@ -455,7 +410,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="contact.cntc_nm"
               type="text"
               name="contact.cntc_nm"
-              value={formData.contact.cntc_nm}
+              value={summaryData.contact.cntc_nm}
               onChange={handleInputChange}
               maxLength={22}
               pattern="^[a-zA-Z0-9\s&amp;]{1,22}$"
@@ -479,7 +434,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="contact.cntc_area_cd"
               type="text"
               name="contact.cntc_area_cd"
-              value={formData.contact.cntc_area_cd}
+              value={summaryData.contact.cntc_area_cd}
               onChange={handleInputChange}
               maxLength={3}
               pattern="^[0-9]{3}$"
@@ -501,7 +456,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="contact.cntc_phn_nbr"
               type="text"
               name="contact.cntc_phn_nbr"
-              value={formData.contact.cntc_phn_nbr}
+              value={summaryData.contact.cntc_phn_nbr}
               onChange={handleInputChange}
               maxLength={8}
               pattern="^[0-9]{3}-[0-9]{4}$"
@@ -520,7 +475,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="contact.cntc_extn_nbr"
               type="text"
               name="contact.cntc_extn_nbr"
-              value={formData.contact.cntc_extn_nbr}
+              value={summaryData.contact.cntc_extn_nbr}
               onChange={handleInputChange}
               maxLength={5}
               pattern="^[0-9]{5}$"
@@ -543,7 +498,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="tx_yr"
               type="text"
               name="tx_yr"
-              value={formData.tx_yr}
+              value={summaryData.tx_yr}
               onChange={handleInputChange}
               maxLength={4}
               pattern="^[0-9]{4}$"
@@ -567,7 +522,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="slp_cnt"
               type="text"
               name="slp_cnt"
-              value={formData.slp_cnt}
+              value={summaryData.slp_cnt}
               onChange={handleInputChange}
               maxLength={7}
               pattern="^[0-9]{1,7}$"
@@ -585,7 +540,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="rppNumber.rpp_rgst_1_nbr"
               type="text"
               name="rppNumber.rpp_rgst_1_nbr"
-              value={formData.rppNumber.rpp_rgst_1_nbr}
+              value={summaryData.rppNumber.rpp_rgst_1_nbr}
               onChange={handleInputChange}
               maxLength={7}
               pattern="^[0-9]{7}$"
@@ -602,7 +557,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="rppNumber.rpp_rgst_2_nbr"
               type="text"
               name="rppNumber.rpp_rgst_2_nbr"
-              value={formData.rppNumber.rpp_rgst_2_nbr}
+              value={summaryData.rppNumber.rpp_rgst_2_nbr}
               onChange={handleInputChange}
               maxLength={7}
               pattern="^[0-9]{7}$"
@@ -619,7 +574,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="rppNumber.rpp_rgst_3_nbr"
               type="text"
               name="rppNumber.rpp_rgst_3_nbr"
-              value={formData.rppNumber.rpp_rgst_3_nbr}
+              value={summaryData.rppNumber.rpp_rgst_3_nbr}
               onChange={handleInputChange}
               maxLength={7}
               pattern="^[0-9]{7}$"
@@ -644,7 +599,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="proprietorSin.pprtr_1_sin"
               type="text"
               name="proprietorSin.pprtr_1_sin"
-              value={formData.proprietorSin.pprtr_1_sin}
+              value={summaryData.proprietorSin.pprtr_1_sin}
               onChange={handleInputChange}
               maxLength={9}
               pattern="^[0-9]{9}$"
@@ -669,7 +624,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               id="proprietorSin.pprtr_2_sin"
               type="text"
               name="proprietorSin.pprtr_2_sin"
-              value={formData.proprietorSin.pprtr_2_sin}
+              value={summaryData.proprietorSin.pprtr_2_sin}
               onChange={handleInputChange}
               maxLength={9}
               pattern="^[0-9]{9}$"
@@ -683,7 +638,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
             <select
               id="rpt_tcd"
               name="rpt_tcd"
-              value={formData.rpt_tcd}
+              value={summaryData.rpt_tcd}
               onChange={handleInputChange}
             >
               <option value="O">Original</option>
@@ -706,10 +661,10 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
             <textarea
               id="fileramendmentnote"
               name="fileramendmentnote"
-              value={formData.fileramendmentnote}
+              value={summaryData.fileramendmentnote}
               onChange={handleInputChange}
               maxLength={1309}
-              disabled={formData.rpt_tcd !== 'A'}
+              disabled={summaryData.rpt_tcd !== 'A'}
             />
           </label>
         </div>
@@ -725,7 +680,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_pens_spran_amt"
-              value={formData.totalAmounts.tot_pens_spran_amt}
+              value={summaryData.totalAmounts.tot_pens_spran_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -741,7 +696,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_lsp_amt"
-              value={formData.totalAmounts.tot_lsp_amt}
+              value={summaryData.totalAmounts.tot_lsp_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -757,7 +712,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_self_cmsn_amt"
-              value={formData.totalAmounts.tot_self_cmsn_amt}
+              value={summaryData.totalAmounts.tot_self_cmsn_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -773,7 +728,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_ptrng_aloc_amt"
-              value={formData.totalAmounts.tot_ptrng_aloc_amt}
+              value={summaryData.totalAmounts.tot_ptrng_aloc_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -791,7 +746,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_past_srvc_amt"
-              value={formData.totalAmounts.tot_past_srvc_amt}
+              value={summaryData.totalAmounts.tot_past_srvc_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -807,7 +762,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_annty_incamt"
-              value={formData.totalAmounts.tot_annty_incamt}
+              value={summaryData.totalAmounts.tot_annty_incamt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -823,7 +778,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.totr_incamt"
-              value={formData.totalAmounts.totr_incamt}
+              value={summaryData.totalAmounts.totr_incamt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -839,7 +794,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_itx_dedn_amt"
-              value={formData.totalAmounts.tot_itx_dedn_amt}
+              value={summaryData.totalAmounts.tot_itx_dedn_amt}
               onChange={handleInputChange}
               maxLength={13}
               disabled
@@ -855,7 +810,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_padj_amt"
-              value={formData.totalAmounts.tot_padj_amt}
+              value={summaryData.totalAmounts.tot_padj_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -873,7 +828,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_resp_aip_amt"
-              value={formData.totalAmounts.tot_resp_aip_amt}
+              value={summaryData.totalAmounts.tot_resp_aip_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -891,7 +846,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.tot_resp_amt"
-              value={formData.totalAmounts.tot_resp_amt}
+              value={summaryData.totalAmounts.tot_resp_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -907,7 +862,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.rpt_tot_fee_srvc_amt"
-              value={formData.totalAmounts.rpt_tot_fee_srvc_amt}
+              value={summaryData.totalAmounts.rpt_tot_fee_srvc_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled
@@ -923,7 +878,7 @@ function T4ASummary({ slips, sendSummaryData, generateXML }: T4ASummaryProps) {
               type="number"
               step="0.01"
               name="totalAmounts.rpt_tot_oth_info_amt"
-              value={formData.totalAmounts.rpt_tot_oth_info_amt}
+              value={summaryData.totalAmounts.rpt_tot_oth_info_amt}
               onChange={handleInputChange}
               maxLength={15}
               disabled

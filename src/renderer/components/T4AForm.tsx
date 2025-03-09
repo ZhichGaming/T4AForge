@@ -1,18 +1,20 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { T4ASlipData } from '../types/T4A.types';
 import T4ASlip from './T4ASlip';
 import './Form.scss';
 
 function T4AForm({
+  slips,
+  setSlips,
   nextStep,
-  sendFormData,
 }: {
+  slips: T4ASlipData[];
+  setSlips: React.Dispatch<React.SetStateAction<T4ASlipData[]>>;
   nextStep: () => void;
-  sendFormData: (formData: T4ASlipData[]) => void;
 }) {
-  const [slips, setSlips] = useState<T4ASlipData[]>([]);
   const [showSlipForm, setShowSlipForm] = useState(false);
   const [editingSlipIndex, setEditingSlipIndex] = useState<number | null>(null);
+  const [editingSlip, setEditingSlip] = useState<T4ASlipData | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSlipComplete = (slipData: T4ASlipData) => {
@@ -23,6 +25,7 @@ function T4AForm({
         return newSlips;
       });
       setEditingSlipIndex(null);
+      setEditingSlip(null);
     } else {
       setSlips((prev) => [...prev, slipData]);
     }
@@ -31,6 +34,7 @@ function T4AForm({
 
   const handleEditSlip = (index: number) => {
     setEditingSlipIndex(index);
+    setEditingSlip(slips[index]);
     setShowSlipForm(true);
   };
 
@@ -44,7 +48,7 @@ function T4AForm({
       return;
     }
 
-    sendFormData(slips);
+    setSlips(slips);
     nextStep();
   };
 
@@ -53,7 +57,10 @@ function T4AForm({
       <h1>T4A Form Generator</h1>
 
       {showSlipForm ? (
-        <T4ASlip onSlipComplete={handleSlipComplete} />
+        <T4ASlip
+          onSlipComplete={handleSlipComplete}
+          editingSlip={editingSlip}
+        />
       ) : (
         <div className="slips-list">
           <h2>T4A Slips</h2>
