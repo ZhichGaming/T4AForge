@@ -677,8 +677,7 @@ function T4ASummary({
             <span className="field-title">Total Pension or Superannuation</span>
             <input
               id="totalAmounts.tot_pens_spran_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_pens_spran_amt"
               value={summaryData.totalAmounts.tot_pens_spran_amt}
               onChange={handleInputChange}
@@ -693,8 +692,7 @@ function T4ASummary({
             <span className="field-title">Total Lump-sum Payments</span>
             <input
               id="totalAmounts.tot_lsp_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_lsp_amt"
               value={summaryData.totalAmounts.tot_lsp_amt}
               onChange={handleInputChange}
@@ -709,8 +707,7 @@ function T4ASummary({
             <span className="field-title">Total Self-employed Commissions</span>
             <input
               id="totalAmounts.tot_self_cmsn_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_self_cmsn_amt"
               value={summaryData.totalAmounts.tot_self_cmsn_amt}
               onChange={handleInputChange}
@@ -725,8 +722,7 @@ function T4ASummary({
             <span className="field-title">Total Patronage Allocations</span>
             <input
               id="totalAmounts.tot_ptrng_aloc_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_ptrng_aloc_amt"
               value={summaryData.totalAmounts.tot_ptrng_aloc_amt}
               onChange={handleInputChange}
@@ -743,8 +739,7 @@ function T4ASummary({
             </span>
             <input
               id="totalAmounts.tot_past_srvc_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_past_srvc_amt"
               value={summaryData.totalAmounts.tot_past_srvc_amt}
               onChange={handleInputChange}
@@ -759,8 +754,7 @@ function T4ASummary({
             <span className="field-title">Total Annuities</span>
             <input
               id="totalAmounts.tot_annty_incamt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_annty_incamt"
               value={summaryData.totalAmounts.tot_annty_incamt}
               onChange={handleInputChange}
@@ -775,8 +769,7 @@ function T4ASummary({
             <span className="field-title">Total Other Income</span>
             <input
               id="totalAmounts.totr_incamt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.totr_incamt"
               value={summaryData.totalAmounts.totr_incamt}
               onChange={handleInputChange}
@@ -791,8 +784,7 @@ function T4ASummary({
             <span className="field-title">Total Income Tax Deducted</span>
             <input
               id="totalAmounts.tot_itx_dedn_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_itx_dedn_amt"
               value={summaryData.totalAmounts.tot_itx_dedn_amt}
               onChange={handleInputChange}
@@ -807,8 +799,7 @@ function T4ASummary({
             <span className="field-title">Total Pension Adjustment</span>
             <input
               id="totalAmounts.tot_padj_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_padj_amt"
               value={summaryData.totalAmounts.tot_padj_amt}
               onChange={handleInputChange}
@@ -825,8 +816,7 @@ function T4ASummary({
             </span>
             <input
               id="totalAmounts.tot_resp_aip_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_resp_aip_amt"
               value={summaryData.totalAmounts.tot_resp_aip_amt}
               onChange={handleInputChange}
@@ -843,8 +833,7 @@ function T4ASummary({
             </span>
             <input
               id="totalAmounts.tot_resp_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.tot_resp_amt"
               value={summaryData.totalAmounts.tot_resp_amt}
               onChange={handleInputChange}
@@ -859,8 +848,7 @@ function T4ASummary({
             <span className="field-title">Total Fees for Services</span>
             <input
               id="totalAmounts.rpt_tot_fee_srvc_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.rpt_tot_fee_srvc_amt"
               value={summaryData.totalAmounts.rpt_tot_fee_srvc_amt}
               onChange={handleInputChange}
@@ -875,8 +863,7 @@ function T4ASummary({
             <span className="field-title">Total Other Information Amounts</span>
             <input
               id="totalAmounts.rpt_tot_oth_info_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="totalAmounts.rpt_tot_oth_info_amt"
               value={summaryData.totalAmounts.rpt_tot_oth_info_amt}
               onChange={handleInputChange}
