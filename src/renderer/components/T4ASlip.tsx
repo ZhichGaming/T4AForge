@@ -718,8 +718,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
             </span>
             <input
               id="amounts.pens_spran_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="amounts.pens_spran_amt"
               value={formData.amounts.pens_spran_amt}
               onChange={handleInputChange}
@@ -738,8 +737,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
             </span>
             <input
               id="amounts.lsp_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="amounts.lsp_amt"
               value={formData.amounts.lsp_amt}
               onChange={handleInputChange}
@@ -758,8 +756,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
             </span>
             <input
               id="amounts.self_empl_cmsn_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="amounts.self_empl_cmsn_amt"
               value={formData.amounts.self_empl_cmsn_amt}
               onChange={handleInputChange}
@@ -778,8 +775,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
             </span>
             <input
               id="amounts.itx_ddct_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="amounts.itx_ddct_amt"
               value={formData.amounts.itx_ddct_amt}
               onChange={handleInputChange}
@@ -798,8 +794,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
             </span>
             <input
               id="amounts.annty_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="amounts.annty_amt"
               value={formData.amounts.annty_amt}
               onChange={handleInputChange}
@@ -818,8 +813,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
             </span>
             <input
               id="amounts.fee_or_oth_srvc_amt"
-              type="number"
-              step="0.01"
+              type="text"
               name="amounts.fee_or_oth_srvc_amt"
               value={formData.amounts.fee_or_oth_srvc_amt}
               onChange={handleInputChange}
@@ -853,8 +847,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
               <div className="other-field-input-container">
                 <input
                   id={`otherInfo.${field}`}
-                  type="number"
-                  step="0.01"
+                  type="text"
                   name={`otherInfo.${field}`}
                   value={formData.otherInfo[field as keyof OtherInfo]}
                   onChange={handleInputChange}
