@@ -9,13 +9,80 @@ import { T4ASlipData, T4ASummaryData } from './types/T4A.types';
 function App() {
   const [selectedForm, setSelectedForm] = useState<string>('T619');
 
-  const [t619FormData, setT619FormData] = useState<T619FormData>(
-    {} as T619FormData,
-  );
-  const [t4aSlipData, setT4aSlipData] = useState<T4ASlipData[]>([]);
-  const [t4aSummary, setT4aSummary] = useState<T4ASummaryData>(
-    {} as T4ASummaryData,
-  );
+  const [t619FormData, setT619FormData] = useState<T619FormData>({
+    accountType: 'bn9',
+    bn9: '',
+    bn15: '',
+    trust: '',
+    nr4: '',
+    RepID: '',
+    sbmt_ref_id: '',
+    summ_cnt: '',
+    lang_cd: 'E',
+    transmitterName: {
+      l1_nm: '',
+    },
+    TransmitterCountryCode: 'CAN',
+    contact: {
+      cntc_nm: '',
+      cntc_area_cd: '',
+      cntc_phn_nbr: '',
+      cntc_extn_nbr: '',
+      cntc_email_area: '',
+      sec_cntc_email_area: '',
+    },
+  });
+  const [t4aSlips, setT4aSlips] = useState<T4ASlipData[]>([]);
+  const [t4aSummary, setT4aSummary] = useState<T4ASummaryData>({
+    bn: '',
+    payerName: {
+      l1_nm: '',
+      l2_nm: '',
+      l3_nm: '',
+    },
+    payerAddress: {
+      addr_l1_txt: '',
+      addr_l2_txt: '',
+      cty_nm: '',
+      prov_cd: '',
+      cntry_cd: '',
+      pstl_cd: '',
+    },
+    contact: {
+      cntc_nm: '',
+      cntc_area_cd: '',
+      cntc_phn_nbr: '',
+      cntc_extn_nbr: '',
+    },
+    tx_yr: '',
+    slp_cnt: '',
+    rppNumber: {
+      rpp_rgst_1_nbr: '',
+      rpp_rgst_2_nbr: '',
+      rpp_rgst_3_nbr: '',
+    },
+    proprietorSin: {
+      pprtr_1_sin: '',
+      pprtr_2_sin: '',
+    },
+    rpt_tcd: 'O',
+    fileramendmentnote: '',
+    totalAmounts: {
+      tot_pens_spran_amt: '',
+      tot_lsp_amt: '',
+      tot_self_cmsn_amt: '',
+      tot_ptrng_aloc_amt: '',
+      tot_past_srvc_amt: '',
+      tot_annty_incamt: '',
+      totr_incamt: '',
+      tot_itx_dedn_amt: '',
+      tot_padj_amt: '',
+      tot_resp_aip_amt: '',
+      tot_resp_amt: '',
+      rpt_tot_fee_srvc_amt: '',
+      rpt_tot_oth_info_amt: '',
+    },
+  });
 
   const [t619Valid, setT619Valid] = useState<boolean>(false);
   const [t4aValid, setT4aValid] = useState<boolean>(false);
@@ -31,7 +98,7 @@ function App() {
   };
 
   const generateXML = () => {
-    const slipsXml = t4aSlipData
+    const slipsXml = t4aSlips
       .map(
         (slip) => `
       <T4ASlip>
@@ -186,49 +253,55 @@ function App() {
     window.URL.revokeObjectURL(url);
   };
 
-function Hello() {
   return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
+    <div className="app">
+      <div className="header-nav">
+        <button
+          className={selectedForm === 'T619' ? 'selected' : ''}
+          type="button"
+          onClick={() => setSelectedForm('T619')}
         >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
+          T619 transmitter information
+        </button>
+        <button
+          className={selectedForm === 'T4A' ? 'selected' : ''}
+          type="button"
+          onClick={() => setSelectedForm('T4A')}
         >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
+          T4A information
+        </button>
+        <button
+          className={selectedForm === 'T4ASummary' ? 'selected' : ''}
+          type="button"
+          onClick={() => setSelectedForm('T4ASummary')}
+        >
+          T4A summary
+        </button>
       </div>
+      {selectedForm === 'T619' && (
+        <T619Form
+          formData={t619FormData}
+          setFormData={setT619FormData}
+          nextStep={() => setSelectedForm('T4A')}
+        />
+      )}
+      {selectedForm === 'T4A' && (
+        <T4AForm
+          slips={t4aSlips}
+          setSlips={setT4aSlips}
+          nextStep={() => setSelectedForm('T4ASummary')}
+        />
+      )}
+      {selectedForm === 'T4ASummary' && (
+        <T4ASummary
+          slips={t4aSlips}
+          summaryData={t4aSummary}
+          setSummaryData={setT4aSummary}
+          generateXML={generateXML}
+        />
+      )}
     </div>
   );
 }
 
-export default function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
-    </Router>
-  );
-}
+export default App;
