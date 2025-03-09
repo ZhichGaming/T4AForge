@@ -181,7 +181,7 @@ function App() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 't619.xml';
+    a.download = `${t619FormData.sbmt_ref_id}.xml`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
