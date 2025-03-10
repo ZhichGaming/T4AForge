@@ -20,59 +20,91 @@ function T4ASummary({
   generateXML,
 }: T4ASummaryProps) {
   const [errorMessage, setErrorMessage] = useState('');
-  const currencyToIntegerCents = (amount: string) => {
-    let formattedAmount = amount;
-
-    if (amount === '') {
-      return 0;
-    }
-
-    if (amount.includes('.')) {
-      if (amount.split('.')[1].length === 1) {
-        formattedAmount = `${amount}0`;
-      } else if (amount.split('.')[1].length > 2) {
-        throw new Error('Amount cannot have more than 2 decimal places');
-      }
-    } else {
-      formattedAmount = `${amount}.00`;
-    }
-
-    const total = parseInt(formattedAmount.replace('.', ''), 10);
-    return total;
-  };
 
   useEffect(() => {
+    const currencyToIntegerCents = (amount: string) => {
+      let formattedAmount = amount;
+
+      if (amount === '') {
+        return 0;
+      }
+
+      if (amount.includes('.')) {
+        if (amount.split('.')[1].length === 0) {
+          formattedAmount = `${amount}00`;
+        } else if (amount.split('.')[1].length === 1) {
+          formattedAmount = `${amount}0`;
+        } else if (amount.split('.')[1].length > 2) {
+          throw new Error('Amount cannot have more than 2 decimal places');
+        }
+      } else {
+        formattedAmount = `${amount}.00`;
+      }
+
+      return parseInt(formattedAmount.replace('.', ''), 10);
+    };
+
+    const addCurrency = (amount: string, prev: string) => {
+      let total = (
+        currencyToIntegerCents(amount) + currencyToIntegerCents(prev)
+      ).toString();
+
+      total = '0'.repeat(Math.max(0, 3 - total.length)) + total;
+
+      return `${total.slice(0, -2)}.${total.slice(-2)}`;
+    };
     const totals: T4ATotalAmounts = slips.reduce(
       (acc, slip) => {
         // Sum up all the amounts
-        acc.tot_pens_spran_amt +=
-          currencyToIntegerCents(slip.amounts.pens_spran_amt) || 0;
-        acc.tot_lsp_amt += currencyToIntegerCents(slip.amounts.lsp_amt) || 0;
-        acc.tot_self_cmsn_amt +=
-          currencyToIntegerCents(slip.amounts.self_empl_cmsn_amt) || 0;
-        acc.tot_ptrng_aloc_amt +=
-          currencyToIntegerCents(slip.otherInfo.ptrng_aloc_amt) || 0;
-        acc.tot_past_srvc_amt +=
-          currencyToIntegerCents(slip.otherInfo.rpp_past_srvc_amt) || 0;
-        acc.tot_annty_incamt +=
-          currencyToIntegerCents(slip.amounts.annty_amt) || 0;
-        acc.totr_incamt +=
-          currencyToIntegerCents(slip.otherInfo.oth_incamt) || 0;
-        acc.tot_itx_dedn_amt +=
-          currencyToIntegerCents(slip.amounts.itx_ddct_amt) || 0;
-        acc.tot_padj_amt +=
-          currencyToIntegerCents(slip.otherInfo.padj_amt) || 0;
-        acc.tot_resp_aip_amt +=
-          currencyToIntegerCents(slip.otherInfo.resp_aip_amt) || 0;
-        acc.tot_resp_amt +=
-          currencyToIntegerCents(slip.otherInfo.resp_educt_ast_amt) || 0;
-        acc.rpt_tot_fee_srvc_amt +=
-          currencyToIntegerCents(slip.amounts.fee_or_oth_srvc_amt) || 0;
+        acc.tot_pens_spran_amt = addCurrency(
+          slip.amounts.pens_spran_amt,
+          acc.tot_pens_spran_amt,
+        );
+        acc.tot_lsp_amt = addCurrency(slip.amounts.lsp_amt, acc.tot_lsp_amt);
+        acc.tot_self_cmsn_amt = addCurrency(
+          slip.amounts.self_empl_cmsn_amt,
+          acc.tot_self_cmsn_amt,
+        );
+        acc.tot_ptrng_aloc_amt = addCurrency(
+          slip.otherInfo.ptrng_aloc_amt,
+          acc.tot_ptrng_aloc_amt,
+        );
+        acc.tot_past_srvc_amt = addCurrency(
+          slip.otherInfo.rpp_past_srvc_amt,
+          acc.tot_past_srvc_amt,
+        );
+        acc.tot_annty_incamt = addCurrency(
+          slip.amounts.annty_amt,
+          acc.tot_annty_incamt,
+        );
+        acc.totr_incamt = addCurrency(
+          slip.otherInfo.oth_incamt,
+          acc.totr_incamt,
+        );
+        acc.tot_itx_dedn_amt = addCurrency(
+          slip.amounts.itx_ddct_amt,
+          acc.tot_itx_dedn_amt,
+        );
+        acc.tot_padj_amt = addCurrency(
+          slip.otherInfo.padj_amt,
+          acc.tot_padj_amt,
+        );
+        acc.tot_resp_aip_amt = addCurrency(
+          slip.otherInfo.resp_aip_amt,
+          acc.tot_resp_aip_amt,
+        );
+        acc.tot_resp_amt = addCurrency(
+          slip.otherInfo.resp_educt_ast_amt,
+          acc.tot_resp_amt,
+        );
+        acc.rpt_tot_fee_srvc_amt = addCurrency(
+          slip.amounts.fee_or_oth_srvc_amt,
+          acc.rpt_tot_fee_srvc_amt,
+        );
 
-        let otherInfoTotal = 0;
+        let otherInfoTotal = '0';
 
         Object.entries(slip.otherInfo).forEach(([key, value]) => {
-          const amount = currencyToIntegerCents(value) || 0;
           const blackListedKeys = [
             'rpp_past_srvc_amt',
             'oth_incamt',
@@ -83,11 +115,14 @@ function T4ASummary({
           ];
 
           if (!blackListedKeys.includes(key)) {
-            otherInfoTotal += amount;
+            otherInfoTotal = addCurrency(value, otherInfoTotal);
           }
         });
 
-        acc.rpt_tot_oth_info_amt += otherInfoTotal;
+        acc.rpt_tot_oth_info_amt = addCurrency(
+          otherInfoTotal,
+          acc.rpt_tot_oth_info_amt,
+        );
 
         return acc;
       },
@@ -108,18 +143,11 @@ function T4ASummary({
       },
     );
 
-    const stringTotals = Object.fromEntries(
-      Object.entries(totals).map(([key, value]) => [
-        key,
-        `${value.toString().slice(0, -2)}.${value.toString().slice(-2)}`,
-      ]),
-    );
-
     setSummaryData((prev) => ({
       ...prev,
       totalAmounts: {
         ...prev.totalAmounts,
-        ...stringTotals,
+        ...totals,
       },
       slp_cnt: slips.length.toString(),
     }));
