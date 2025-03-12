@@ -208,7 +208,7 @@ function App() {
       </T4A_TAMT>
     </T4ASummary>`;
 
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <Submission xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <T619>
     <TransmitterAccountNumber>
@@ -243,6 +243,10 @@ function App() {
     </T4A>
   </Return>
 </Submission>`;
+
+    // Remove empty tags and lines
+    xml = xml.replace(/<[^>]*><\/[^>]*>/g, '');
+    xml = xml.replace(/^\s*\n/gm, '');
 
     const blob = new Blob([xml], { type: 'application/xml' });
     const url = window.URL.createObjectURL(blob);
