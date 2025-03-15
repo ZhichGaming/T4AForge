@@ -13,10 +13,10 @@ function formatCurrency(value: string) {
   if (split.length > 1) {
     const [integer, decimal] = split;
     result = `${integer}.${decimal.padEnd(2, '0').slice(0, 2)}`;
-  } else if (split.length === 1) {
-    result = `${value}.00`;
-  } else {
+  } else if (value === '') {
     result = '';
+  } else {
+    result = `${value}.00`;
   }
 
   return result;
