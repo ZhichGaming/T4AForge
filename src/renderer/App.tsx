@@ -174,7 +174,7 @@ function App() {
 
     const summaryXml = `
     <T4ASummary>
-      <bn>${escapeXmlSpecialChars(t4aSummary.bn)}</bn>
+      <bn>${escapeXmlSpecialChars(t4aSlips[0].bn)}</bn>
       <PAYR_NM>
         <l1_nm>${escapeXmlSpecialChars(t4aSummary.payerName.l1_nm)}</l1_nm>
         <l2_nm>${escapeXmlSpecialChars(t4aSummary.payerName.l2_nm)}</l2_nm>
@@ -261,6 +261,7 @@ function App() {
 </Submission>`
       .replace(/<[^>]*><\/[^>]*>/g, '')
       .replace(/^\s*\n/gm, '');
+    // TODO: remove empty parent fields as well such as <ADD_INFO> and <OTH_INFO>
 
     const blob = new Blob([xml], { type: 'application/xml' });
     const url = window.URL.createObjectURL(blob);
