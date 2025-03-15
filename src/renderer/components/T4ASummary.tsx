@@ -50,8 +50,13 @@ function T4ASummary({
       ).toString();
 
       total = '0'.repeat(Math.max(0, 3 - total.length)) + total;
+      const formattedTotal = `${total.slice(0, -2)}.${total.slice(-2)}`;
 
-      return `${total.slice(0, -2)}.${total.slice(-2)}`;
+      if (formattedTotal === '0.00') {
+        return '';
+      }
+
+      return formattedTotal;
     };
     const totals: T4ATotalAmounts = slips.reduce(
       (acc, slip) => {
