@@ -162,7 +162,7 @@ function App() {
               ([key, value]) =>
                 `<${key}>${escapeXmlSpecialChars(formatCurrency(value))}</${key}>`,
             )
-            .join('\n        ')}
+            .join('\n          ')}
         </OTH_INFO>
         <ADD_INFO>
           <spp_sps_cntrb_ind>${escapeXmlSpecialChars(slip.addInfo.spp_sps_cntrb_ind)}</spp_sps_cntrb_ind>
@@ -260,8 +260,10 @@ function App() {
   </Return>
 </Submission>`
       .replace(/<[^>]*><\/[^>]*>/g, '')
+      .replace(/^\s*\n/gm, '')
+      .replace(/<(\w+)>\s*<\/\1>/g, '<$1></$1>')
+      .replace(/<[^>]*><\/[^>]*>/g, '')
       .replace(/^\s*\n/gm, '');
-    // TODO: remove empty parent fields as well such as <ADD_INFO> and <OTH_INFO>
 
     const blob = new Blob([xml], { type: 'application/xml' });
     const url = window.URL.createObjectURL(blob);
