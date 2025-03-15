@@ -238,7 +238,7 @@ function T619Form({
               onChange={handleInputChange}
               required
               maxLength={8}
-              pattern="^[A-Za-z0-9]{8}$"
+              pattern="^[A-Za-z0-9]{1,8}$"
             />
           </label>
         </div>
