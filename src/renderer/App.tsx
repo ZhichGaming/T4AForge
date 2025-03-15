@@ -6,6 +6,22 @@ import T4ASummary from './components/T4ASummary';
 import T619FormData from './types/T619.types';
 import { T4ASlipData, T4ASummaryData } from './types/T4A.types';
 
+function formatCurrency(value: string) {
+  let result = value;
+  const split = value.split('.');
+
+  if (split.length > 1) {
+    const [integer, decimal] = split;
+    result = `${integer}.${decimal.padEnd(2, '0').slice(0, 2)}`;
+  } else if (split.length === 1) {
+    result = `${value}.00`;
+  } else {
+    result = '';
+  }
+
+  return result;
+}
+
 function App() {
   const [selectedForm, setSelectedForm] = useState<string>('T619');
 
@@ -132,19 +148,19 @@ function App() {
         <ppln_dpsp_rgst_nbr>${escapeXmlSpecialChars(slip.ppln_dpsp_rgst_nbr)}</ppln_dpsp_rgst_nbr>
         <rpt_tcd>${escapeXmlSpecialChars(slip.rpt_tcd)}</rpt_tcd>
         <T4A_AMT>
-          <pens_spran_amt>${escapeXmlSpecialChars(slip.amounts.pens_spran_amt)}</pens_spran_amt>
-          <lsp_amt>${escapeXmlSpecialChars(slip.amounts.lsp_amt)}</lsp_amt>
-          <self_empl_cmsn_amt>${escapeXmlSpecialChars(slip.amounts.self_empl_cmsn_amt)}</self_empl_cmsn_amt>
-          <itx_ddct_amt>${escapeXmlSpecialChars(slip.amounts.itx_ddct_amt)}</itx_ddct_amt>
-          <annty_amt>${escapeXmlSpecialChars(slip.amounts.annty_amt)}</annty_amt>
-          <fee_or_oth_srvc_amt>${escapeXmlSpecialChars(slip.amounts.fee_or_oth_srvc_amt)}</fee_or_oth_srvc_amt>
+          <pens_spran_amt>${escapeXmlSpecialChars(formatCurrency(slip.amounts.pens_spran_amt))}</pens_spran_amt>
+          <lsp_amt>${escapeXmlSpecialChars(formatCurrency(slip.amounts.lsp_amt))}</lsp_amt>
+          <self_empl_cmsn_amt>${escapeXmlSpecialChars(formatCurrency(slip.amounts.self_empl_cmsn_amt))}</self_empl_cmsn_amt>
+          <itx_ddct_amt>${escapeXmlSpecialChars(formatCurrency(slip.amounts.itx_ddct_amt))}</itx_ddct_amt>
+          <annty_amt>${escapeXmlSpecialChars(formatCurrency(slip.amounts.annty_amt))}</annty_amt>
+          <fee_or_oth_srvc_amt>${escapeXmlSpecialChars(formatCurrency(slip.amounts.fee_or_oth_srvc_amt))}</fee_or_oth_srvc_amt>
         </T4A_AMT>
         <OTH_INFO>
           ${Object.entries(slip.otherInfo)
             .filter(([_, value]) => value !== '')
             .map(
               ([key, value]) =>
-                `<${key}>${escapeXmlSpecialChars(value)}</${key}>`,
+                `<${key}>${escapeXmlSpecialChars(formatCurrency(value))}</${key}>`,
             )
             .join('\n        ')}
         </OTH_INFO>
@@ -208,7 +224,7 @@ function App() {
       </T4A_TAMT>
     </T4ASummary>`;
 
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <Submission xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <T619>
     <TransmitterAccountNumber>
@@ -242,11 +258,9 @@ function App() {
       ${summaryXml}
     </T4A>
   </Return>
-</Submission>`;
-
-    // Remove empty tags and lines
-    xml = xml.replace(/<[^>]*><\/[^>]*>/g, '');
-    xml = xml.replace(/^\s*\n/gm, '');
+</Submission>`
+      .replace(/<[^>]*><\/[^>]*>/g, '')
+      .replace(/^\s*\n/gm, '');
 
     const blob = new Blob([xml], { type: 'application/xml' });
     const url = window.URL.createObjectURL(blob);
