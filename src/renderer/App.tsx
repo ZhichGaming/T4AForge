@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import T4AForm from './components/T4AForm';
 import T619Form from './components/T619Form';
 import './App.scss';
@@ -100,9 +100,17 @@ function App() {
     },
   });
 
-  const [t619Valid, setT619Valid] = useState<boolean>(false);
-  const [t4aValid, setT4aValid] = useState<boolean>(false);
-  const [t4aSummaryValid, setT4aSummaryValid] = useState<boolean>(false);
+  useEffect(() => {
+    setT4aSummary((prev) => ({
+      ...prev,
+      contact: {
+        cntc_nm: t619FormData.contact.cntc_nm,
+        cntc_area_cd: t619FormData.contact.cntc_area_cd,
+        cntc_phn_nbr: t619FormData.contact.cntc_phn_nbr,
+        cntc_extn_nbr: t619FormData.contact.cntc_extn_nbr,
+      },
+    }));
+  }, [t619FormData.contact]);
 
   const escapeXmlSpecialChars = (str: string): string => {
     return str
@@ -157,7 +165,7 @@ function App() {
         </T4A_AMT>
         <OTH_INFO>
           ${Object.entries(slip.otherInfo)
-            .filter(([_, value]) => value !== '')
+            .filter(([, value]) => value !== '')
             .map(
               ([key, value]) =>
                 `<${key}>${escapeXmlSpecialChars(formatCurrency(value))}</${key}>`,
