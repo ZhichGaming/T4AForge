@@ -112,6 +112,15 @@ function App() {
     }));
   }, [t619FormData.contact]);
 
+  useEffect(() => {
+    setT4aSlips((prev) =>
+      prev.map((slip) => ({
+        ...slip,
+        bn: t4aSummary.bn,
+      })),
+    );
+  }, [t4aSummary.bn, t4aSlips.length]);
+
   const escapeXmlSpecialChars = (str: string): string => {
     return str
       .replace(/&/g, '&amp;')

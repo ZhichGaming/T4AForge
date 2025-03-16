@@ -425,6 +425,33 @@ function T4ASummary({
             />
           </label>
         </div>
+
+        <div className="form-group">
+          <label htmlFor="bn">
+            <span className="tooltip">
+              <span className="field-title">
+                Payer&apos;s Account Number (BN)
+              </span>
+              <span className="tooltiptext">
+                Required, 9 numeric characters, RT, RZ, RP or RC followed by 4
+                numeric characters. <br />
+                <br />
+                enter the Account Number as used on Form PD7A, Statement of
+                Account for Current Source Deductions
+              </span>
+            </span>
+            <input
+              id="bn"
+              type="text"
+              name="bn"
+              value={summaryData.bn}
+              onChange={handleInputChange}
+              maxLength={15}
+              pattern="^[0-9]{9}(RT|RZ|RP|RC)[0-9]{4}$"
+              required
+            />
+          </label>
+        </div>
       </div>
 
       <div className="form-section">
