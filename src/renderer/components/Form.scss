@@ -109,6 +109,12 @@
       }
     }
 
+    input:disabled {
+      background-color: #F6F6F6;
+      color: #6c757d;
+      cursor: auto;
+    }
+
     textarea {
       min-height: 100px;
       resize: vertical;
