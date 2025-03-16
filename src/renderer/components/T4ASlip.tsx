@@ -807,7 +807,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
         </span>
 
         {otherFields.map((field) => (
-          <div className="form-group">
+          <div className="form-group" key={field}>
             <label htmlFor={`otherInfo.${field}`}>
               <span className="tooltip">
                 <span className="field-title">
