@@ -191,7 +191,7 @@ function App() {
 
     const summaryXml = `
     <T4ASummary>
-      <bn>${escapeXmlSpecialChars(t4aSlips[0].bn)}</bn>
+      <bn>${escapeXmlSpecialChars(t4aSummary.bn)}</bn>
       <PAYR_NM>
         <l1_nm>${escapeXmlSpecialChars(t4aSummary.payerName.l1_nm)}</l1_nm>
         <l2_nm>${escapeXmlSpecialChars(t4aSummary.payerName.l2_nm)}</l2_nm>
