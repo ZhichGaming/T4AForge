@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { T4ASlipData } from '../types/T4A.types';
 import T4ASlip from './T4ASlip';
 import './Form.scss';
@@ -65,7 +66,7 @@ function T4AForm({
         <div className="slips-list">
           <h2>T4A Slips</h2>
           {slips.map((slip, index) => (
-            <div className="slip-item">
+            <div className="slip-item" key={uuidv4()}>
               <span>
                 {slip.recipientType === 'individual'
                   ? `${slip.recipientName.snm}, ${slip.recipientName.gvn_nm}`
