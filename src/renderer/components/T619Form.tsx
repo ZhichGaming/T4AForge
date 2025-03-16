@@ -40,11 +40,12 @@ function T619Form({
   const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData((prev: T619FormData) => ({
       ...prev,
-      accountType: e.target.value as 'bn9' | 'bn15' | 'trust' | 'nr4',
+      accountType: e.target.value as 'bn9' | 'bn15' | 'trust' | 'nr4' | 'repid',
       bn9: e.target.value === 'bn9' ? prev.bn9 : '',
       bn15: e.target.value === 'bn15' ? prev.bn15 : '',
       trust: e.target.value === 'trust' ? prev.trust : '',
       nr4: e.target.value === 'nr4' ? prev.nr4 : '',
+      RepID: e.target.value === 'repid' ? prev.RepID : '',
     }));
   };
 
@@ -106,6 +107,7 @@ function T619Form({
               <option value="bn15">Business Number (15 chars)</option>
               <option value="trust">Trust Account</option>
               <option value="nr4">NR4 Account</option>
+              <option value="repid">Representative ID</option>
             </select>
           </label>
         </div>
@@ -202,25 +204,28 @@ function T619Form({
           </div>
         )}
 
-        <div className="form-group">
-          <label htmlFor="RepID">
-            <span className="tooltip">
-              <span className="field-title">Representative ID (RepID)</span>
-              <span className="tooltiptext">
-                Required if logged in using Represent a client (RAC) application, 7 alphanumeric
+        {formData.accountType === 'repid' && (
+          <div className="form-group">
+            <label htmlFor="RepID">
+              <span className="tooltip">
+                <span className="field-title">Representative ID (RepID)</span>
+                <span className="tooltiptext">
+                  Required if logged in using Represent a client (RAC) application, 7 alphanumeric
+                </span>
               </span>
-            </span>
-            <input
-              id="RepID"
-              type="text"
-              name="RepID"
-              value={formData.RepID}
-              onChange={handleInputChange}
-              maxLength={7}
-              pattern="^[A-Za-z0-9]{0,7}$"
-            />
-          </label>
-        </div>
+              <input
+                id="RepID"
+                type="text"
+                name="RepID"
+                value={formData.RepID}
+                onChange={handleInputChange}
+                required
+                maxLength={7}
+                pattern="^[A-Za-z0-9]{0,7}$"
+              />
+            </label>
+          </div>
+        )}
 
         <div className="form-group">
           <label htmlFor="sbmt_ref_id">
