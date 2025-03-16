@@ -93,7 +93,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
         l2_nm: '',
       },
       sin: '',
-      rcpnt_bn: '',
+      rcpnt_bn: '000000000RT0000',
       recipientAddress: {
         addr_l1_txt: '',
         addr_l2_txt: '',
@@ -208,6 +208,27 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
     }
   };
 
+  const handleRecipientTypeChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      sin: value === 'corporation' ? '000000000' : prev.sin,
+      rcpnt_bn: value === 'individual' ? '000000000RT0000' : prev.rcpnt_bn,
+      recipientName: {
+        snm: value === 'corporation' ? '' : prev.recipientName.snm,
+        gvn_nm: value === 'corporation' ? '' : prev.recipientName.gvn_nm,
+        init: value === 'corporation' ? '' : prev.recipientName.init,
+      },
+      recipientCorpName: {
+        l1_nm: value === 'individual' ? '' : prev.recipientCorpName.l1_nm,
+        l2_nm: value === 'individual' ? '' : prev.recipientCorpName.l2_nm,
+      },
+    }));
+  };
+
   const validateForm = (): {
     requiredErrors: string[];
     patternErrors: string[];
@@ -277,7 +298,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
               id="recipientType"
               name="recipientType"
               value={formData.recipientType}
-              onChange={handleInputChange}
+              onChange={handleRecipientTypeChange}
             >
               <option value="individual">Individual</option>
               <option value="corporation">Corporation</option>
@@ -357,6 +378,31 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
                 />
               </label>
             </div>
+
+            <div className="form-group">
+              <label htmlFor="sin">
+                <span className="tooltip">
+                  <span className="field-title">SIN</span>
+                  <span className="tooltiptext">
+                    Required, 9 numeric characters. <br />
+                    Where the recipient has failed to provide a SIN, or is
+                    filing for a corporation enter zeroes in the field. <br />
+                    Omission of a valid SIN results in non-registration of
+                    contributions to the Canada Pension Plan.
+                  </span>
+                </span>
+                <input
+                  id="sin"
+                  type="text"
+                  name="sin"
+                  value={formData.sin}
+                  onChange={handleInputChange}
+                  maxLength={9}
+                  pattern="^[0-9]{9}$"
+                  required
+                />
+              </label>
+            </div>
           </>
         ) : (
           <>
@@ -405,56 +451,31 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
                 />
               </label>
             </div>
+
+            <div className="form-group">
+              <label htmlFor="rcpnt_bn">
+                <span className="tooltip">
+                  <span className="field-title">Recipient Business Number</span>
+                  <span className="tooltiptext">
+                    Required, 9 numeric characters, RT, RZ, RP or RC followed by
+                    4 numeric characters. <br />
+                    The recipient&apos;s business number.
+                  </span>
+                </span>
+                <input
+                  id="rcpnt_bn"
+                  type="text"
+                  name="rcpnt_bn"
+                  value={formData.rcpnt_bn}
+                  onChange={handleInputChange}
+                  maxLength={15}
+                  pattern="^[0-9]{9}(RT|RZ|RP|RC)[0-9]{4}$"
+                  required
+                />
+              </label>
+            </div>
           </>
         )}
-
-        <div className="form-group">
-          <label htmlFor="sin">
-            <span className="tooltip">
-              <span className="field-title">SIN</span>
-              <span className="tooltiptext">
-                Required, 9 numeric characters. <br />
-                Where the recipient has failed to provide a SIN, or is filing
-                for a corporation enter zeroes in the field. <br />
-                Omission of a valid SIN results in non-registration of
-                contributions to the Canada Pension Plan.
-              </span>
-            </span>
-            <input
-              id="sin"
-              type="text"
-              name="sin"
-              value={formData.sin}
-              onChange={handleInputChange}
-              maxLength={9}
-              pattern="^[0-9]{9}$"
-              required
-            />
-          </label>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="rcpnt_bn">
-            <span className="tooltip">
-              <span className="field-title">Recipient Business Number</span>
-              <span className="tooltiptext">
-                Required, 9 numeric characters, RT, RZ, RP or RC followed by 4
-                numeric characters. <br />
-                The recipient&apos;s business number.
-              </span>
-            </span>
-            <input
-              id="rcpnt_bn"
-              type="text"
-              name="rcpnt_bn"
-              value={formData.rcpnt_bn}
-              onChange={handleInputChange}
-              maxLength={15}
-              pattern="^[0-9]{9}(RT|RZ|RP|RC)[0-9]{4}$"
-              required
-            />
-          </label>
-        </div>
 
         <div className="form-group">
           <label htmlFor="recipientAddress.addr_l1_txt">
