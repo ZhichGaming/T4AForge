@@ -260,6 +260,7 @@ function T619Form({
               required
               maxLength={6}
               pattern="^[0-9]{1,6}$"
+              disabled
             />
           </label>
         </div>
