@@ -33,7 +33,7 @@ function App() {
     nr4: '',
     RepID: '',
     sbmt_ref_id: '',
-    summ_cnt: '',
+    summ_cnt: '1',
     lang_cd: 'E',
     transmitterName: {
       l1_nm: '',
