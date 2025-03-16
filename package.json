@@ -1,6 +1,6 @@
 {
-  "name": "electron-react-boilerplate",
-  "description": "A foundation for scalable desktop apps",
+  "name": "t4a-forge",
+  "description": "T4A Forge",
   "keywords": [
     "electron",
     "boilerplate",
@@ -12,27 +12,21 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/ZhichGaming/T4AForge#readme",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/ZhichGaming/T4AForge/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/ZhichGaming/T4AForge.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "ZhichGaming",
+    "email": "nick.zhicheng@gmail.com",
+    "url": "https://github.com/ZhichGaming"
   },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
+  "contributors": [],
   "main": "./.erb/dll/main.bundle.dev.js",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
