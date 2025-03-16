@@ -12,7 +12,7 @@ export interface Contact {
 }
 
 export default interface T619FormData {
-  accountType: 'bn9' | 'bn15' | 'trust' | 'nr4';
+  accountType: 'bn9' | 'bn15' | 'trust' | 'nr4' | 'repid';
   bn9: string;
   bn15: string;
   trust: string;
