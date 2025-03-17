@@ -5,6 +5,8 @@ import {
   T4ATotalAmounts,
 } from '../types/T4A.types';
 import './Form.scss';
+import PresetPopup from './PresetPopup';
+import { PayerPreset, TransmitterPreset } from '../types/Presets.types';
 
 interface T4ASummaryProps {
   slips: T4ASlipData[];
@@ -242,9 +244,22 @@ function T4ASummary({
     generateXML();
   };
 
+  const handleLoadPreset = (preset: TransmitterPreset | PayerPreset) => {
+    setSummaryData((prev) => ({
+      ...prev,
+      ...preset,
+    }));
+  };
+
   return (
     <div id="t4a-summary" className="form">
       <h2>T4A Summary</h2>
+      <PresetPopup
+        presetType="payer"
+        formData={summaryData}
+        trigger={<button type="button">Presets</button>}
+        loadPreset={handleLoadPreset}
+      />
       <div className="form-section">
         <h2>Payer Information</h2>
         <div className="form-group">

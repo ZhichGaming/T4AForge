@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import './Form.scss';
 import T619FormData from '../types/T619.types';
+import PresetPopup from './PresetPopup';
+import { PayerPreset, TransmitterPreset } from '../types/Presets.types';
 
 function T619Form({
   formData,
@@ -86,9 +88,23 @@ function T619Form({
     nextStep();
   };
 
+  const handleLoadPreset = (preset: TransmitterPreset | PayerPreset) => {
+    setFormData((prev) => ({
+      ...prev,
+      ...preset,
+    }));
+  };
+
   return (
     <div id="t619-form" className="form">
       <h1>T619 Form Generator</h1>
+
+      <PresetPopup
+        presetType="transmitter"
+        formData={formData}
+        trigger={<button type="button">Presets</button>}
+        loadPreset={handleLoadPreset}
+      />
 
       <div className="form-section">
         <h2>Transmitter Information</h2>
