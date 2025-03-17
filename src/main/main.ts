@@ -14,6 +14,16 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import {
+  getPresets,
+  setPreset,
+  deletePreset,
+  createPresetDirectories,
+} from './manage-presets';
+import {
+  PayerPreset,
+  TransmitterPreset,
+} from '../renderer/types/Presets.types';
 
 class AppUpdater {
   constructor() {
@@ -127,7 +137,28 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    createPresetDirectories();
+
+    ipcMain.handle('getPresets', (_, presetType: 'transmitter' | 'payer') =>
+      getPresets(presetType),
+    );
+    ipcMain.handle(
+      'setPreset',
+      (
+        _,
+        presetType: 'transmitter' | 'payer',
+        presetName: string,
+        presetData: TransmitterPreset | PayerPreset,
+      ) => setPreset(presetType, presetName, presetData),
+    );
+    ipcMain.handle(
+      'deletePreset',
+      (_, presetType: 'transmitter' | 'payer', presetName: string) =>
+        deletePreset(presetType, presetName),
+    );
+
     createWindow();
+
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
