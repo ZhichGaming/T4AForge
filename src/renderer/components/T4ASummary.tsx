@@ -594,6 +594,7 @@ function T4ASummary({
               maxLength={4}
               pattern="^[0-9]{4}$"
               required
+              disabled
             />
           </label>
         </div>
