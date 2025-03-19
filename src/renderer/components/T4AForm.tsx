@@ -10,7 +10,7 @@ function T4AForm({
   nextStep,
 }: {
   slips: T4ASlipData[];
-  setSlips: React.Dispatch<React.SetStateAction<T4ASlipData[]>>;
+  setSlips: React.Dispatch<React.SetStateAction<T4ASlipData[] | null>>;
   nextStep: () => void;
 }) {
   const [showSlipForm, setShowSlipForm] = useState(false);
@@ -21,15 +21,24 @@ function T4AForm({
   const handleSlipComplete = (slipData: T4ASlipData) => {
     if (editingSlipIndex !== null) {
       setSlips((prev) => {
+        // I'm returning null here because when slips are null, we are not supposed to have a submission open
+        if (prev === null) return null;
+
         const newSlips = [...prev];
         newSlips[editingSlipIndex] = slipData;
         return newSlips;
       });
+
       setEditingSlipIndex(null);
       setEditingSlip(null);
     } else {
-      setSlips((prev) => [...prev, slipData]);
+      setSlips((prev) => {
+        if (prev === null) return null;
+
+        return [...prev, slipData];
+      });
     }
+
     setShowSlipForm(false);
   };
 
@@ -40,7 +49,11 @@ function T4AForm({
   };
 
   const handleDeleteSlip = (index: number) => {
-    setSlips((prev) => prev.filter((_, i) => i !== index));
+    setSlips((prev) => {
+      if (prev === null) return null;
+
+      return prev.filter((_, i) => i !== index)
+    });
   };
 
   const handleSubmit = () => {

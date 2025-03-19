@@ -1,0 +1,36 @@
+import React from 'react';
+
+interface Props extends React.SVGAttributes<SVGAElement> {
+  name:
+    | 'arrow-left'
+    | 'plus';
+  size?: number;
+}
+
+export default function Icon({ size = 18, name, ...rest }: Props) {
+  const getIconPath = (): string => {
+    switch (name) {
+      case 'arrow-left':
+        return 'M13.83 19a1 1 0 0 1-.78-.37l-4.83-6a1 1 0 0 1 0-1.27l5-6a1 1 0 0 1 1.54 1.28L10.29 12l4.32 5.36a1 1 0 0 1-.78 1.64z';
+      case 'plus':
+        return 'M12 2a1 1 0 0 1 1 1v8h8a1 1 0 0 1 0 2h-8v8a1 1 0 0 1-2 0v-8H3a1 1 0 0 1 0-2h8V3a1 1 0 0 1 1-1z';
+      default:
+        return '';
+    }
+  };
+
+  return React.createElement(
+    'svg',
+    {
+      xmlns: 'http://www.w3.org/2000/svg',
+      width: size,
+      height: size,
+      viewBox: '0 0 24 24',
+      fill: 'currentColor',
+      ...rest,
+    },
+    React.createElement('path', {
+      d: getIconPath(),
+    }),
+  );
+};

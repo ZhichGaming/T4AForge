@@ -5,6 +5,12 @@ import './App.scss';
 import T4ASummary from './components/T4ASummary';
 import T619FormData from './types/T619.types';
 import { T4ASlipData, T4ASummaryData } from './types/T4A.types';
+import { Sidebar, Menu, SubMenu, MenuItem } from 'react-pro-sidebar';
+import Icon from './components/Icon';
+import { SubmissionRecord, SubmissionYearRecord } from './types/SubmissionStorage.types';
+import FormPage from './FormPage';
+import Popup from 'reactjs-popup';
+import { get } from 'lodash';
 
 function formatCurrency(value: string) {
   let result = value;
@@ -22,104 +28,172 @@ function formatCurrency(value: string) {
   return result;
 }
 
-function App() {
-  const [selectedForm, setSelectedForm] = useState<string>('T619');
+async function createNewSubmission(year: number): Promise<SubmissionRecord> {
+  const id = await window.manageSubmissions.getNextSubmissionId(year);
 
-  const [t619FormData, setT619FormData] = useState<T619FormData>({
-    accountType: 'bn9',
-    bn9: '',
-    bn15: '',
-    trust: '',
-    nr4: '',
-    RepID: '',
-    sbmt_ref_id: '',
-    summ_cnt: '1',
-    lang_cd: 'E',
-    transmitterName: {
-      l1_nm: '',
-    },
-    TransmitterCountryCode: 'CAN',
-    contact: {
-      cntc_nm: '',
-      cntc_area_cd: '',
-      cntc_phn_nbr: '',
-      cntc_extn_nbr: '',
-      cntc_email_area: '',
-      sec_cntc_email_area: '',
-    },
-  });
-  const [t4aSlips, setT4aSlips] = useState<T4ASlipData[]>([]);
-  const [t4aSummary, setT4aSummary] = useState<T4ASummaryData>({
-    bn: '',
-    payerName: {
-      l1_nm: '',
-      l2_nm: '',
-      l3_nm: '',
-    },
-    payerAddress: {
-      addr_l1_txt: '',
-      addr_l2_txt: '',
-      cty_nm: '',
-      prov_cd: '',
-      cntry_cd: '',
-      pstl_cd: '',
-    },
-    contact: {
-      cntc_nm: '',
-      cntc_area_cd: '',
-      cntc_phn_nbr: '',
-      cntc_extn_nbr: '',
-    },
-    tx_yr: '',
-    slp_cnt: '',
-    rppNumber: {
-      rpp_rgst_1_nbr: '',
-      rpp_rgst_2_nbr: '',
-      rpp_rgst_3_nbr: '',
-    },
-    proprietorSin: {
-      pprtr_1_sin: '',
-      pprtr_2_sin: '',
-    },
-    rpt_tcd: 'O',
-    fileramendmentnote: '',
-    totalAmounts: {
-      tot_pens_spran_amt: '',
-      tot_lsp_amt: '',
-      tot_self_cmsn_amt: '',
-      tot_ptrng_aloc_amt: '',
-      tot_past_srvc_amt: '',
-      tot_annty_incamt: '',
-      totr_incamt: '',
-      tot_itx_dedn_amt: '',
-      tot_padj_amt: '',
-      tot_resp_aip_amt: '',
-      tot_resp_amt: '',
-      rpt_tot_fee_srvc_amt: '',
-      rpt_tot_oth_info_amt: '',
-    },
-  });
-
-  useEffect(() => {
-    setT4aSummary((prev) => ({
-      ...prev,
-      contact: {
-        cntc_nm: t619FormData.contact.cntc_nm,
-        cntc_area_cd: t619FormData.contact.cntc_area_cd,
-        cntc_phn_nbr: t619FormData.contact.cntc_phn_nbr,
-        cntc_extn_nbr: t619FormData.contact.cntc_extn_nbr,
+  const submission: SubmissionRecord = {
+    id: id,
+    t619: {
+      accountType: 'bn9',
+      bn9: '',
+      bn15: '',
+      trust: '',
+      nr4: '',
+      RepID: '',
+      sbmt_ref_id: '',
+      summ_cnt: '1',
+      lang_cd: 'E',
+      transmitterName: {
+        l1_nm: '',
       },
-    }));
-  }, [t619FormData.contact]);
+      TransmitterCountryCode: 'CAN',
+      contact: {
+        cntc_nm: '',
+        cntc_area_cd: '',
+        cntc_phn_nbr: '',
+        cntc_extn_nbr: '',
+        cntc_email_area: '',
+        sec_cntc_email_area: '',
+      },
+    },
+    t4a: [],
+    t4aSummary: {
+      bn: '',
+      payerName: {
+        l1_nm: '',
+        l2_nm: '',
+        l3_nm: '',
+      },
+      payerAddress: {
+        addr_l1_txt: '',
+        addr_l2_txt: '',
+        cty_nm: '',
+        prov_cd: '',
+        cntry_cd: '',
+        pstl_cd: '',
+      },
+      contact: {
+        cntc_nm: '',
+        cntc_area_cd: '',
+        cntc_phn_nbr: '',
+        cntc_extn_nbr: '',
+      },
+      tx_yr: '',
+      slp_cnt: '',
+      rppNumber: {
+        rpp_rgst_1_nbr: '',
+        rpp_rgst_2_nbr: '',
+        rpp_rgst_3_nbr: '',
+      },
+      proprietorSin: {
+        pprtr_1_sin: '',
+        pprtr_2_sin: '',
+      },
+      rpt_tcd: 'O',
+      fileramendmentnote: '',
+      totalAmounts: {
+        tot_pens_spran_amt: '',
+        tot_lsp_amt: '',
+        tot_self_cmsn_amt: '',
+        tot_ptrng_aloc_amt: '',
+        tot_past_srvc_amt: '',
+        tot_annty_incamt: '',
+        totr_incamt: '',
+        tot_itx_dedn_amt: '',
+        tot_padj_amt: '',
+        tot_resp_aip_amt: '',
+        tot_resp_amt: '',
+        rpt_tot_fee_srvc_amt: '',
+        rpt_tot_oth_info_amt: '',
+      },
+    }
+  }
+
+  await window.manageSubmissions.setSubmission(year, submission);
+  return submission;
+}
+
+function App() {
+  const [submissionsList, setSubmissionsList] = useState<SubmissionYearRecord[]>([]);
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState<[number, string] | null>(null);
+
+  const [activeFormIdentifier, setActiveFormIdentifier] = useState<string>('T619');
+
+  const [t619FormData, setT619FormData] = useState<T619FormData | null>(null);
+  const [t4aSlips, setT4aSlips] = useState<T4ASlipData[] | null>(null);
+  const [t4aSummary, setT4aSummary] = useState<T4ASummaryData | null>(null);
+
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [newYearShown, setNewYearShown] = useState(false)
+  const [newYear, setNewYear] = useState("")
 
   useEffect(() => {
-    setT4aSlips((prev) =>
-      prev.map((slip) => ({
+    if (t619FormData === null) return;
+
+    setT4aSummary((prev) => {
+      if (prev === null) return null;
+
+      return {
+        ...prev,
+        contact: {
+          cntc_nm: t619FormData.contact.cntc_nm,
+          cntc_area_cd: t619FormData.contact.cntc_area_cd,
+          cntc_phn_nbr: t619FormData.contact.cntc_phn_nbr,
+          cntc_extn_nbr: t619FormData.contact.cntc_extn_nbr,
+        },
+      };
+    });
+  }, [t619FormData?.contact]);
+
+  useEffect(() => {
+    if (t4aSummary === null) return;
+
+    setT4aSlips((prev) => {
+      if (prev === null) return null;
+
+      return prev.map((slip) => ({
         ...slip,
         bn: t4aSummary.bn,
-      })),
-    );
-  }, [t4aSummary.bn, t4aSlips.length]);
+      }))
+    });
+  }, [t4aSummary?.bn, t4aSlips?.length]);
+
+  const getSubmissions = async () => {
+    const submissions: SubmissionYearRecord[] = await window.manageSubmissions.getSubmissions();
+    setSubmissionsList(submissions);
+  }
+
+  useEffect(() => {
+    getSubmissions();
+  }, []);
+
+  useEffect(() => {
+    if (selectedSubmissionId === null) return;
+
+    const [year, id] = selectedSubmissionId;
+    const submission = submissionsList.find((submission) => submission.year === year)?.submissions.find((sub) => sub.id === id);
+
+    if (submission === undefined) return;
+
+    setT619FormData(submission.t619);
+    setT4aSlips(submission.t4a);
+    setT4aSummary(submission.t4aSummary);
+  }, [selectedSubmissionId]);
+
+  useEffect(() => {
+    if (t619FormData === null || t4aSlips === null || t4aSummary === null) return;
+
+    const [year, id] = selectedSubmissionId as [number, string];
+    const submission: SubmissionRecord = {
+      id: id,
+      t619: t619FormData,
+      t4a: t4aSlips,
+      t4aSummary: t4aSummary,
+    };
+
+    window.manageSubmissions.setSubmission(year, submission);
+    getSubmissions();
+  }, [t619FormData, t4aSlips, t4aSummary]);
 
   const escapeXmlSpecialChars = (str: string): string => {
     return str
@@ -131,6 +205,8 @@ function App() {
   };
 
   const generateXML = () => {
+    if (t619FormData === null || t4aSlips === null || t4aSummary === null) return
+
     const slipsXml = t4aSlips
       .map(
         (slip) => `
@@ -291,53 +367,85 @@ function App() {
     window.URL.revokeObjectURL(url);
   };
 
+  const addNewYear = async () => {
+    const year = parseInt(newYear)
+
+    if (newYear === "" || isNaN(year)) return
+
+    await window.manageSubmissions.createSubmissionDirectories(year)
+    await getSubmissions()
+  }
+
   return (
     <div className="app">
-      <div className="header-nav">
-        <button
-          className={selectedForm === 'T619' ? 'selected' : ''}
-          type="button"
-          onClick={() => setSelectedForm('T619')}
-        >
-          T619 transmitter information
-        </button>
-        <button
-          className={selectedForm === 'T4A' ? 'selected' : ''}
-          type="button"
-          onClick={() => setSelectedForm('T4A')}
-        >
-          T4A information
-        </button>
-        <button
-          className={selectedForm === 'T4ASummary' ? 'selected' : ''}
-          type="button"
-          onClick={() => setSelectedForm('T4ASummary')}
-        >
-          T4A summary
-        </button>
+      <Sidebar className="sidebar" collapsed={sidebarCollapsed}>
+        <h1 className='sidebar-title'>T4A Forge</h1>
+        <Menu>
+          {submissionsList.map((submission) => (
+            <SubMenu label={submission.year.toString()} key={submission.year.toString()}>
+              {submission.submissions.map((sub) => (
+                <MenuItem key={sub.id} onClick={() => setSelectedSubmissionId([submission.year, sub.id])}>
+                  {sub.id} <span className='sidebar-submission-label'>{sub.t4aSummary?.payerName.l1_nm}</span>
+                </MenuItem>
+              ))}
+              <MenuItem
+                icon={<Icon name="plus"/>}
+                onClick={() => {
+                  createNewSubmission(submission.year).then((newSubmission) => {
+                    getSubmissions();
+                    setSelectedSubmissionId([submission.year, newSubmission.id]);
+                  });
+                }
+              }>
+                New Submission
+              </MenuItem>
+            </SubMenu>
+          ))}
+        </Menu>
+
+        <Menu>
+          <Popup
+            open={newYearShown}
+            trigger={
+            <MenuItem
+              icon={<Icon name="plus"/>}
+              onClick={() => setNewYearShown(true)}>
+                Add New Year
+            </MenuItem>
+          }>
+            <div className="popup-content">
+              <input type="text" value={newYear} onChange={(e) => setNewYear(e.target.value)} />
+              <button onClick={() => {
+                addNewYear();
+                setNewYearShown(false);
+              }}>Add</button>
+            </div>
+          </Popup>
+          <MenuItem
+            icon={<Icon name="arrow-left" style={{ transform: sidebarCollapsed ? "rotateZ(180deg)" : "rotateZ(0deg)" }} />}
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className='collapse-sidebar-button'>
+              Collapse Sidebar
+          </MenuItem>
+        </Menu>
+      </Sidebar>
+      <div className="content">
+        {t619FormData != null && t4aSlips != null && t4aSummary != null ?
+          <FormPage activeFormIdentifier={activeFormIdentifier}
+            setActiveFormIdentifier={setActiveFormIdentifier}
+            t619FormData={t619FormData}
+            setT619FormData={setT619FormData}
+            t4aSlips={t4aSlips}
+            setT4aSlips={setT4aSlips}
+            t4aSummary={t4aSummary}
+            setT4aSummary={setT4aSummary}
+            generateXML={generateXML} />
+            :
+            <div className="start-content">
+              <p>Select or create new submission</p>
+            </div>
+        }
       </div>
-      {selectedForm === 'T619' && (
-        <T619Form
-          formData={t619FormData}
-          setFormData={setT619FormData}
-          nextStep={() => setSelectedForm('T4A')}
-        />
-      )}
-      {selectedForm === 'T4A' && (
-        <T4AForm
-          slips={t4aSlips}
-          setSlips={setT4aSlips}
-          nextStep={() => setSelectedForm('T4ASummary')}
-        />
-      )}
-      {selectedForm === 'T4ASummary' && (
-        <T4ASummary
-          slips={t4aSlips}
-          summaryData={t4aSummary}
-          setSummaryData={setT4aSummary}
-          generateXML={generateXML}
-        />
-      )}
     </div>
   );
 }
