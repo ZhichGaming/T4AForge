@@ -276,6 +276,7 @@ function T619Form({
               required
               maxLength={8}
               pattern="^[A-Za-z0-9]{1,8}$"
+              disabled
             />
           </label>
         </div>

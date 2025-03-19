@@ -40,7 +40,7 @@ async function createNewSubmission(year: number): Promise<SubmissionRecord> {
       trust: '',
       nr4: '',
       RepID: '',
-      sbmt_ref_id: '',
+      sbmt_ref_id: id,
       summ_cnt: '1',
       lang_cd: 'E',
       transmitterName: {
@@ -78,7 +78,7 @@ async function createNewSubmission(year: number): Promise<SubmissionRecord> {
         cntc_phn_nbr: '',
         cntc_extn_nbr: '',
       },
-      tx_yr: '',
+      tx_yr: year.toString(),
       slp_cnt: '',
       rppNumber: {
         rpp_rgst_1_nbr: '',
