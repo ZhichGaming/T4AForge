@@ -24,6 +24,7 @@ import {
   PayerPreset,
   TransmitterPreset,
 } from '../renderer/types/Presets.types';
+import { createSubmissionDirectories, deleteSubmission, getNextSubmissionId, getSubmissions, setSubmission } from './manage-submissions';
 
 class AppUpdater {
   constructor() {
@@ -138,6 +139,7 @@ app
   .whenReady()
   .then(() => {
     createPresetDirectories();
+    createSubmissionDirectories();
 
     ipcMain.handle('getPresets', (_, presetType: 'transmitter' | 'payer') =>
       getPresets(presetType),
@@ -155,6 +157,21 @@ app
       'deletePreset',
       (_, presetType: 'transmitter' | 'payer', presetName: string) =>
         deletePreset(presetType, presetName),
+    );
+
+    ipcMain.handle('createSubmissionDirectories', (_, year?: number) => createSubmissionDirectories(year));
+    ipcMain.handle('getSubmissions', () => getSubmissions());
+    ipcMain.handle(
+      'setSubmission',
+      (_, year: number, submissionData: any) =>
+        setSubmission(year, submissionData),
+    );
+    ipcMain.handle(
+      'deleteSubmission',
+      (_, year: number, id: string) => deleteSubmission(year, id),
+    );
+    ipcMain.handle('getNextSubmissionId', (_, year: number) =>
+      getNextSubmissionId(year),
     );
 
     createWindow();

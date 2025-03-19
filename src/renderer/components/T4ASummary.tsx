@@ -11,7 +11,7 @@ import { PayerPreset, TransmitterPreset } from '../types/Presets.types';
 interface T4ASummaryProps {
   slips: T4ASlipData[];
   summaryData: T4ASummaryData;
-  setSummaryData: React.Dispatch<React.SetStateAction<T4ASummaryData>>;
+  setSummaryData: React.Dispatch<React.SetStateAction<T4ASummaryData | null>>;
   generateXML: () => void;
 }
 
@@ -150,14 +150,18 @@ function T4ASummary({
       },
     );
 
-    setSummaryData((prev) => ({
-      ...prev,
-      totalAmounts: {
-        ...prev.totalAmounts,
-        ...totals,
-      },
-      slp_cnt: slips.length.toString(),
-    }));
+    setSummaryData((prev) => {
+      if (prev === null) return null;
+
+      return {
+        ...prev,
+        totalAmounts: {
+          ...prev.totalAmounts,
+          ...totals,
+        },
+        slp_cnt: slips.length.toString(),
+      }
+    });
   }, [setSummaryData, slips]);
 
   const validateForm = (): {
@@ -205,18 +209,26 @@ function T4ASummary({
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
 
-      setSummaryData((prev: T4ASummaryData) => ({
-        ...prev,
-        [parent]: {
-          ...(prev[parent as keyof T4ASummaryData] as any),
-          [child]: value,
-        },
-      }));
+      setSummaryData((prev) => {
+        if (prev === null) return null;
+
+        return {
+          ...prev,
+          [parent]: {
+            ...(prev[parent as keyof T4ASummaryData] as any),
+            [child]: value,
+          },
+        }
+      });
     } else {
-      setSummaryData((prev: T4ASummaryData) => ({
-        ...prev,
-        [name]: value,
-      }));
+      setSummaryData((prev) => {
+        if (prev === null) return null;
+
+        return {
+          ...prev,
+          [name]: value,
+        }
+      });
     }
   };
 
@@ -245,10 +257,14 @@ function T4ASummary({
   };
 
   const handleLoadPreset = (preset: TransmitterPreset | PayerPreset) => {
-    setSummaryData((prev) => ({
-      ...prev,
-      ...preset,
-    }));
+    setSummaryData((prev) => {
+      if (prev === null) return null;
+
+      return {
+        ...prev,
+        ...preset,
+      }
+    });
   };
 
   return (

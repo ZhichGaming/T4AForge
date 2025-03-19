@@ -11,7 +11,7 @@ function T619Form({
   nextStep,
 }: {
   formData: T619FormData;
-  setFormData: React.Dispatch<React.SetStateAction<T619FormData>>;
+  setFormData: React.Dispatch<React.SetStateAction<T619FormData | null>>;
   nextStep: () => void;
 }) {
   const [errorMessage, setErrorMessage] = useState('');
@@ -24,31 +24,43 @@ function T619Form({
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
 
-      setFormData((prev: T619FormData) => ({
-        ...prev,
-        [parent]: {
-          ...(prev[parent as keyof T619FormData] as any),
-          [child]: value,
-        },
-      }));
+      setFormData((prev) => {
+        if (prev === null) return null;
+
+        return {
+          ...prev,
+          [parent]: {
+            ...(prev[parent as keyof T619FormData] as any),
+            [child]: value,
+          },
+        }
+      });
     } else {
-      setFormData((prev: T619FormData) => ({
-        ...prev,
-        [name]: value,
-      }));
+      setFormData((prev) => {
+        if (prev === null) return null;
+
+        return {
+          ...prev,
+          [name]: value,
+        }
+      });
     }
   };
 
   const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData((prev: T619FormData) => ({
-      ...prev,
-      accountType: e.target.value as 'bn9' | 'bn15' | 'trust' | 'nr4' | 'repid',
-      bn9: e.target.value === 'bn9' ? prev.bn9 : '',
-      bn15: e.target.value === 'bn15' ? prev.bn15 : '',
-      trust: e.target.value === 'trust' ? prev.trust : '',
-      nr4: e.target.value === 'nr4' ? prev.nr4 : '',
-      RepID: e.target.value === 'repid' ? prev.RepID : '',
-    }));
+    setFormData((prev) => {
+      if (prev === null) return null;
+
+      return {
+        ...prev,
+        accountType: e.target.value as 'bn9' | 'bn15' | 'trust' | 'nr4' | 'repid',
+        bn9: e.target.value === 'bn9' ? prev.bn9 : '',
+        bn15: e.target.value === 'bn15' ? prev.bn15 : '',
+        trust: e.target.value === 'trust' ? prev.trust : '',
+        nr4: e.target.value === 'nr4' ? prev.nr4 : '',
+        RepID: e.target.value === 'repid' ? prev.RepID : '',
+      }
+    });
   };
 
   const validateForm = (): { requiredErrors: string[]; patternErrors: string[] } => {
@@ -89,10 +101,14 @@ function T619Form({
   };
 
   const handleLoadPreset = (preset: TransmitterPreset | PayerPreset) => {
-    setFormData((prev) => ({
-      ...prev,
-      ...preset,
-    }));
+    setFormData((prev) => {
+      if (prev === null) return null;
+
+      return {
+        ...prev,
+        ...preset,
+      }
+    });
   };
 
   return (
