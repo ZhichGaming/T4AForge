@@ -134,6 +134,12 @@ button.destructive {
   color: #e74c3c;
 }
 
+hr {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 0;
+}
+
 ul.list {
   list-style-type: none;
   margin-bottom: 1rem;
@@ -213,12 +219,6 @@ ul.list {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 400px;
-
-  hr {
-    border: none;
-    border-top: 1px solid #e0e0e0;
-    margin: 1rem 0;
-  }
 
   .actions {
     display: flex;
