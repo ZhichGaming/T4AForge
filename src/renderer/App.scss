@@ -13,7 +13,7 @@ body {
   }
 
   .sidebar-submission-label {
-    font-size: small;
+    // font-size: small;
     color: gray;
   }
 
@@ -150,6 +150,59 @@ ul.list {
     padding: 0.5rem 0;
     border-bottom: 1px solid #e9ecef;
   }
+}
+
+.progress-bar {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e0e0e0;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.step-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.step {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  position: relative;
+  z-index: 2;
+}
+
+.step.selected {
+  background: white;
+}
+
+.step-label {
+  position: absolute;
+  transform: translateY(30px);
+  font-size: small;
+  text-align: center;
 }
 
 // MARK: Popup
