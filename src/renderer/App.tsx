@@ -449,6 +449,8 @@ function App() {
     <div className="app">
       <Sidebar className="sidebar" collapsed={sidebarCollapsed}>
         <h1 className='sidebar-title'>T4A Forge</h1>
+        <hr />
+
         <Menu>
           {submissionsList.map((submission) => (
             <SubMenu label={submission.year.toString()} key={submission.year.toString()}>
@@ -472,6 +474,7 @@ function App() {
           ))}
         </Menu>
 
+        <hr />
         <Menu>
           <Popup
             open={newYearShown}
