@@ -31,28 +31,37 @@ export default function FormPage(
 ) {
   return (
     <>
-      <div className="header-nav">
-        <button
-          className={activeFormIdentifier === 'T619' ? 'selected' : ''}
-          type="button"
-          onClick={() => setActiveFormIdentifier('T619')}
-        >
-          T619 transmitter information
-        </button>
-        <button
-          className={activeFormIdentifier === 'T4A' ? 'selected' : ''}
-          type="button"
-          onClick={() => setActiveFormIdentifier('T4A')}
-        >
-          T4A information
-        </button>
-        <button
-          className={activeFormIdentifier === 'T4ASummary' ? 'selected' : ''}
-          type="button"
-          onClick={() => setActiveFormIdentifier('T4ASummary')}
-        >
-          T4A summary
-        </button>
+      <div className="progress-bar">
+        <div className="step-container">
+          <button
+            className={(activeFormIdentifier === 'T619' ? 'selected' : '') + " step"}
+            type="button"
+            onClick={() => setActiveFormIdentifier('T619')}
+          >
+            1
+          </button>
+          <p className="step-label">T619 transmitter information</p>
+        </div>
+        <div className="step-container">
+          <button
+            className={(activeFormIdentifier === 'T4A' ? 'selected' : '') + " step"}
+            type="button"
+            onClick={() => setActiveFormIdentifier('T4A')}
+          >
+            2
+          </button>
+          <p className="step-label">T4A information</p>
+        </div>
+        <div className="step-container">
+          <button
+            className={(activeFormIdentifier === 'T4ASummary' ? 'selected' : '') + " step"}
+            type="button"
+            onClick={() => setActiveFormIdentifier('T4ASummary')}
+          >
+            3
+          </button>
+          <p className="step-label">Summary</p>
+        </div>
       </div>
       {activeFormIdentifier === 'T619' && (
         <T619Form
