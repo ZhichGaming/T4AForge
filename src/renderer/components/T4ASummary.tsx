@@ -269,11 +269,11 @@ function T4ASummary({
 
   return (
     <div id="t4a-summary" className="form">
-      <h2>T4A Summary</h2>
+      <h2>Payer Summary</h2>
       <PresetPopup
         presetType="payer"
         formData={summaryData}
-        trigger={<button type="button">Presets</button>}
+        trigger={<button type="button" className='preset-button'>Presets</button>}
         loadPreset={handleLoadPreset}
       />
       <div className="form-section">

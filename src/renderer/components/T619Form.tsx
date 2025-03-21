@@ -113,12 +113,11 @@ function T619Form({
 
   return (
     <div id="t619-form" className="form">
-      <h1>T619 Form Generator</h1>
-
+      <h2>Submission Information</h2>
       <PresetPopup
         presetType="transmitter"
         formData={formData}
-        trigger={<button type="button">Presets</button>}
+        trigger={<button type="button" className='preset-button'>Presets</button>}
         loadPreset={handleLoadPreset}
       />
 
