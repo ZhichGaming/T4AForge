@@ -64,14 +64,12 @@ export default function PresetPopup({
       modal
       nested
     >
-      <div className="container">
-        <p className="title">
-          {presetType.charAt(0).toUpperCase() + presetType.slice(1)} presets
-        </p>
+      <div className="popup-content-container">
+        <h2>{presetType.charAt(0).toUpperCase() + presetType.slice(1)} presets</h2>
         <hr />
-        <div className="presets">
+        <ul className='list presets'>
           {presets.map((preset) => (
-            <div key={preset.id}>
+            <li key={preset.id}>
               <p>{preset.name}</p>
               <div className="preset-actions">
                 <button type="button" onClick={() => loadPreset(preset.data)}>
@@ -88,9 +86,9 @@ export default function PresetPopup({
                   Delete
                 </button>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
         <hr />
         <div className="actions">
           <Popup

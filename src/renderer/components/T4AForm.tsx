@@ -68,18 +68,17 @@ function T4AForm({
 
   return (
     <div className="form">
-      <h1>T4A Form Generator</h1>
-
       {showSlipForm ? (
         <T4ASlip
           onSlipComplete={handleSlipComplete}
           editingSlip={editingSlip}
         />
       ) : (
-        <div className="slips-list">
-          <h2>T4A Slips</h2>
+        <>
+        <h2>T4A Slips</h2>
+        <ul className="list slips-list">
           {slips.map((slip, index) => (
-            <div className="slip-item" key={uuidv4()}>
+            <li className="slip-item" key={uuidv4()}>
               <span>
                 {slip.recipientType === 'individual'
                   ? `${slip.recipientName.snm}, ${slip.recipientName.gvn_nm}`
@@ -89,23 +88,24 @@ function T4AForm({
                 <button type="button" onClick={() => handleEditSlip(index)}>
                   Edit
                 </button>
-                <button type="button" onClick={() => handleDeleteSlip(index)}>
+                <button type="button" className='destructive' onClick={() => handleDeleteSlip(index)}>
                   Delete
                 </button>
               </div>
-            </div>
+            </li>
           ))}
+        </ul>
+        <div className='t4a-actions'>
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
           <button type="button" onClick={() => setShowSlipForm(true)}>
             Add Slip
           </button>
+          <button type="button" onClick={handleSubmit}>
+            Next Step
+          </button>
         </div>
+        </>
       )}
-
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-
-      <button type="button" onClick={handleSubmit}>
-        Next Step
-      </button>
     </div>
   );
 }
