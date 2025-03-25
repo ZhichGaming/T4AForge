@@ -2,13 +2,13 @@ import T4AForm from "./components/T4AForm";
 import T4ASummary from "./components/T4ASummary";
 import T619Form from "./components/T619Form";
 import { T4ASlipData, T4ASummaryData } from "./types/T4A.types";
-import T619FormData from "./types/T619.types";
+import T619Data from "./types/T619.types";
 
 interface FormPageProps {
   activeFormIdentifier: string;
   setActiveFormIdentifier: React.Dispatch<React.SetStateAction<string>>;
-  t619FormData: T619FormData;
-  setT619FormData: React.Dispatch<React.SetStateAction<T619FormData | null>>;
+  t619FormData: T619Data;
+  setT619FormData: React.Dispatch<React.SetStateAction<T619Data | null>>;
   t4aSlips: T4ASlipData[];
   setT4aSlips: React.Dispatch<React.SetStateAction<T4ASlipData[] | null>>;
   t4aSummary: T4ASummaryData;

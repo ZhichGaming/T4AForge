@@ -4,12 +4,12 @@ import _ from 'lodash';
 import './PresetPopup.scss';
 import './Form.scss';
 import Preset, { TransmitterPreset, PayerPreset } from '../types/Presets.types';
-import T619FormData from '../types/T619.types';
+import T619Data from '../types/T619.types';
 import { T4ASummaryData } from '../types/T4A.types';
 
 interface PresetPopupProps {
   presetType: 'transmitter' | 'payer';
-  formData: T619FormData | T4ASummaryData;
+  formData: T619Data | T4ASummaryData;
   trigger:
     | React.JSX.Element
     | ((isOpen: boolean) => React.JSX.Element)
@@ -19,7 +19,7 @@ interface PresetPopupProps {
 
 // This frustrates me a lot.
 export function toPreset(
-  obj: T619FormData | T4ASummaryData,
+  obj: T619Data | T4ASummaryData,
   type: 'transmitter' | 'payer',
 ): TransmitterPreset | PayerPreset {
   const reduced =

@@ -25,6 +25,7 @@ import {
   TransmitterPreset,
 } from '../renderer/types/Presets.types';
 import { createSubmissionDirectories, deleteSubmission, getNextSubmissionId, getSubmissions, setSubmission } from './manage-submissions';
+import { getCSV } from './manage-csv';
 
 class AppUpdater {
   constructor() {
@@ -173,6 +174,8 @@ app
     ipcMain.handle('getNextSubmissionId', (_, year: number) =>
       getNextSubmissionId(year),
     );
+
+    ipcMain.handle('getCSV', (_, filePath: string) => getCSV(filePath));
 
     createWindow();
 

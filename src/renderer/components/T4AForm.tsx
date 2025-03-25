@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { T4ASlipData } from '../types/T4A.types';
 import T4ASlip from './T4ASlip';
 import './Form.scss';
+import CSVPopup from './CSVPopup';
 
 function T4AForm({
   slips,
@@ -76,6 +77,7 @@ function T4AForm({
       ) : (
         <>
         <h2>T4A Slips</h2>
+        <CSVPopup />
         <ul className="list slips-list">
           {slips.map((slip, index) => (
             <li className="slip-item" key={uuidv4()}>

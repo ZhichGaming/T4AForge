@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
 import './Form.scss';
-import T619FormData from '../types/T619.types';
+import T619Data from '../types/T619.types';
 import PresetPopup from './PresetPopup';
 import { PayerPreset, TransmitterPreset } from '../types/Presets.types';
 
@@ -10,8 +10,8 @@ function T619Form({
   setFormData,
   nextStep,
 }: {
-  formData: T619FormData;
-  setFormData: React.Dispatch<React.SetStateAction<T619FormData | null>>;
+  formData: T619Data;
+  setFormData: React.Dispatch<React.SetStateAction<T619Data | null>>;
   nextStep: () => void;
 }) {
   const [errorMessage, setErrorMessage] = useState('');
@@ -30,7 +30,7 @@ function T619Form({
         return {
           ...prev,
           [parent]: {
-            ...(prev[parent as keyof T619FormData] as any),
+            ...(prev[parent as keyof T619Data] as any),
             [child]: value,
           },
         }
@@ -117,7 +117,7 @@ function T619Form({
       <PresetPopup
         presetType="transmitter"
         formData={formData}
-        trigger={<button type="button" className='preset-button'>Presets</button>}
+        trigger={<button type="button" className='pre-form-button'>Presets</button>}
         loadPreset={handleLoadPreset}
       />
 

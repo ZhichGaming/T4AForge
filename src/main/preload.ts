@@ -5,7 +5,6 @@ import {
   PayerPreset,
   TransmitterPreset,
 } from '../renderer/types/Presets.types';
-import { createSubmissionDirectories, deleteSubmission } from './manage-submissions';
 
 const managePresets = {
   getPresets: (presetType: 'transmitter' | 'payer') =>
@@ -31,8 +30,14 @@ const manageSubmissions = {
     ipcRenderer.invoke('getNextSubmissionId', year),
 };
 
+const manageCSV = {
+  getCSV: (filePath: string) => ipcRenderer.invoke('getCSV', filePath),
+};
+
 contextBridge.exposeInMainWorld('managePresets', managePresets);
 contextBridge.exposeInMainWorld('manageSubmissions', manageSubmissions);
+contextBridge.exposeInMainWorld('manageCSV', manageCSV);
 
 export type ManagePresets = typeof managePresets;
 export type ManageSubmissions = typeof manageSubmissions;
+export type ManageCSV = typeof manageCSV;

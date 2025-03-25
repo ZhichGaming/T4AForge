@@ -1,78 +1,8 @@
 import React, { useState } from 'react';
 import { T4ASlipData, OtherInfo } from '../types/T4A.types';
 import './Form.scss';
-
-const otherFieldsTitles = {
-  elg_rtir_amt: 'Eligible Retiring Allowances (Code 026)',
-  nelg_rtir_amt: 'Non-eligible Retiring Allowances (Code 027)',
-  oth_incamt: 'Other Income (Code 028)',
-  ptrng_aloc_amt: 'Patronage Allocations (Code 030)',
-  rpp_past_srvc_amt:
-    'Registered Pension Plan Contributions - Past Service (Code 032)',
-  padj_amt: 'Pension Adjustment (Code 034)',
-  alda_amt: 'Advanced Life Deferred Annuity Purchase (Code 037)',
-  resp_aip_amt: 'RESP Accumulated Income Payments (Code 040)',
-  resp_educt_ast_amt: 'RESP Educational Assistance Payments (Code 042)',
-  chrty_dons_amt: 'Charitable Donations (Code 046)',
-  nr_lsp_trnsf_amt:
-    'Lump-sum Payments - Non-resident Services Transfer (Code 102)',
-  rsch_grnt_amt: 'Research Grants (Code 104)',
-  brsy_amt: 'Scholarships, Fellowships, or Bursaries (Code 105)',
-  dth_ben_amt: 'Death Benefits (Code 106)',
-  wag_ls_incamt: 'Wage Loss Replacement Plan Income (Code 107)',
-  lsp_rpp_nelg_amt:
-    'RPP Lump-sum Payments - Not Eligible for Transfer (Code 108)',
-  nrgst_ppln_amt: 'Unregistered Pension Plan (Code 109)',
-  pr_71_acr_lsp_amt:
-    'Lump-sum Payments Accrued to December 31, 1971 (Code 110)',
-  inc_avg_annty_amt: 'IAAC Annuities (Code 111)',
-  dpsp_ins_pay_amt: 'DPSP Installment or Annuity Payments (Code 115)',
-  med_trvl_amt: 'Medical Travel (Code 116)',
-  loan_ben_amt: 'Loan Benefit under Subsection 80.4(2) (Code 117)',
-  med_prem_ben_amt: 'Medical Premium Benefit (Code 118)',
-  grp_trm_life_amt: 'Group Term Life Insurance Benefit (Code 119)',
-  resp_aip_oth_amt: 'RESP Accumulated Income Payments to Other (Code 122)',
-  ins_rvk_dpsp_amt: 'Revoked DPSP Installment or Annuity Payments (Code 123)',
-  brd_wrk_site_amt: 'Board and Lodging at Special Work Sites (Code 124)',
-  dsblt_ben_amt: 'Disability Benefits (Code 125)',
-  cntrbr_prr_pspp_cnamt:
-    'Contributor RPP Past Service Pre-1990 Contributions (Code 126)',
-  vtrn_ben_amt: "Veteran's Benefit (Code 127)",
-  vtrn_ben_pens_splt_elg_amt:
-    "Veterans' Benefits Eligible for Pension Splitting (Code 128)",
-  tx_dfr_ptrng_dvamt: 'Tax Deferred Patronage Dividends (Code 129)',
-  atp_inctv_grnt_amt: 'Apprenticeship Incentive/Completion Grant (Code 130)',
-  rdsp_amt: 'Registered Disability Savings Plan (Code 131)',
-  wag_ptct_pgm_amt: 'Wage Earner Protection Program (Code 132)',
-  var_pens_ben_amt: 'Variable Pension Benefits (Code 133)',
-  tfsa_tax_amt: 'TFSA/FHSA Taxable Amount (Code 134)',
-  rcpnt_pay_prem_phsp_amt:
-    'Recipient-paid Private Health Services Plan Premiums (Code 135)',
-  pmmc_isg_amt: 'Parents of Murdered/Missing Children Benefits (Code 136)',
-  indn_oth_incamt: 'Indian Act - Exempt Other Income (Code 144)',
-  indn_xmpt_pens_amt: 'Indian Act - Exempt Pension/Superannuation (Code 146)',
-  indn_xmpt_lsp_amt: 'Indian Act - Exempt Lump-sum Payments (Code 148)',
-  lbr_adj_ben_aprpt_act_amt: 'Labour Adjustment Benefits (Code 150)',
-  subp_qlf_amt: 'SUBP Qualified Under Income Tax Act (Code 152)',
-  csh_awrd_pze_payr_amt: 'Cash Award or Prize from Payer (Code 154)',
-  bkcy_sttl_amt: 'Bankruptcy Settlement (Code 156)',
-  lsp_nelg_trnsf_amt:
-    'Lump-sum Payments - Not Eligible for Transfer (Code 158)',
-  ncntrbr_prr_pspp_cnamt:
-    'Non-Contributor RPP Past Service Pre-1990 (Code 162)',
-  lsp_dpsp_nelg_amt:
-    'DPSP Lump-sum Payments - Not Eligible for Transfer (Code 180)',
-  lsp_nrgst_pens_amt: 'Unregistered Pension Benefits Lump-sum (Code 190)',
-  prpp_tx_inc_pamt: 'PRPP Payments (Code 194)',
-  prpp_txmpt_inc_pamt: 'Indian Act - Exempt PRPP Payments (Code 195)',
-  abe_tuit_ast_amt: 'Adult Basic Education Tuition Assistance (Code 196)',
-  prov_trty_emrg_ben_amt:
-    'Provincial/Territorial COVID-19 Assistance (Code 200)',
-  repmt_covid_fncl_asstnc:
-    'Repayment of COVID-19 Financial Assistance (Code 201)',
-  oas_lump_sum_pamt: 'One-time Payment for Older Seniors (Code 205)',
-  pst_dctrl_fshp_amt: 'Postdoctoral Fellowship Income (Code 210)',
-};
+import { FIELD_TITLES } from '../utils/FIELD_TITLES';
+import FormGroup from './FormGroup';
 
 interface T4ASlipProps {
   onSlipComplete: (slipData: T4ASlipData) => void;
@@ -81,104 +11,7 @@ interface T4ASlipProps {
 
 function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
   const [formData, setFormData] = useState<T4ASlipData>(
-    editingSlip || {
-      recipientType: 'individual',
-      recipientName: {
-        snm: '',
-        gvn_nm: '',
-        init: '',
-      },
-      recipientCorpName: {
-        l1_nm: '',
-        l2_nm: '',
-      },
-      sin: '',
-      rcpnt_bn: '000000000RT0000',
-      recipientAddress: {
-        addr_l1_txt: '',
-        addr_l2_txt: '',
-        cty_nm: '',
-        prov_cd: '',
-        cntry_cd: '',
-        pstl_cd: '',
-      },
-      rcpnt_nbr: '',
-      bn: '',
-      payr_dntl_ben_rpt_cd: '',
-      ppln_dpsp_rgst_nbr: '',
-      rpt_tcd: 'O',
-      amounts: {
-        pens_spran_amt: '',
-        lsp_amt: '',
-        self_empl_cmsn_amt: '',
-        itx_ddct_amt: '',
-        annty_amt: '',
-        fee_or_oth_srvc_amt: '',
-      },
-      otherInfo: {
-        elg_rtir_amt: '',
-        nelg_rtir_amt: '',
-        oth_incamt: '',
-        ptrng_aloc_amt: '',
-        rpp_past_srvc_amt: '',
-        padj_amt: '',
-        alda_amt: '',
-        resp_aip_amt: '',
-        resp_educt_ast_amt: '',
-        chrty_dons_amt: '',
-        nr_lsp_trnsf_amt: '',
-        rsch_grnt_amt: '',
-        brsy_amt: '',
-        dth_ben_amt: '',
-        wag_ls_incamt: '',
-        lsp_rpp_nelg_amt: '',
-        nrgst_ppln_amt: '',
-        pr_71_acr_lsp_amt: '',
-        inc_avg_annty_amt: '',
-        dpsp_ins_pay_amt: '',
-        med_trvl_amt: '',
-        loan_ben_amt: '',
-        med_prem_ben_amt: '',
-        grp_trm_life_amt: '',
-        resp_aip_oth_amt: '',
-        ins_rvk_dpsp_amt: '',
-        brd_wrk_site_amt: '',
-        dsblt_ben_amt: '',
-        cntrbr_prr_pspp_cnamt: '',
-        vtrn_ben_amt: '',
-        vtrn_ben_pens_splt_elg_amt: '',
-        tx_dfr_ptrng_dvamt: '',
-        atp_inctv_grnt_amt: '',
-        rdsp_amt: '',
-        wag_ptct_pgm_amt: '',
-        var_pens_ben_amt: '',
-        tfsa_tax_amt: '',
-        rcpnt_pay_prem_phsp_amt: '',
-        pmmc_isg_amt: '',
-        indn_oth_incamt: '',
-        indn_xmpt_pens_amt: '',
-        indn_xmpt_lsp_amt: '',
-        lbr_adj_ben_aprpt_act_amt: '',
-        subp_qlf_amt: '',
-        csh_awrd_pze_payr_amt: '',
-        bkcy_sttl_amt: '',
-        lsp_nelg_trnsf_amt: '',
-        ncntrbr_prr_pspp_cnamt: '',
-        lsp_dpsp_nelg_amt: '',
-        lsp_nrgst_pens_amt: '',
-        prpp_tx_inc_pamt: '',
-        prpp_txmpt_inc_pamt: '',
-        abe_tuit_ast_amt: '',
-        prov_trty_emrg_ben_amt: '',
-        repmt_covid_fncl_asstnc: '',
-        oas_lump_sum_pamt: '',
-        pst_dctrl_fshp_amt: '',
-      },
-      addInfo: {
-        spp_sps_cntrb_ind: '',
-        spp_sps_cntrbr_sin: '',
-      },
-    },
+    editingSlip || new T4ASlipData(),
   );
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -832,7 +665,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
             <label htmlFor={`otherInfo.${field}`}>
               <span className="tooltip">
                 <span className="field-title">
-                  {otherFieldsTitles[field as keyof typeof otherFieldsTitles]}
+                  {FIELD_TITLES.otherInfo[field as keyof typeof FIELD_TITLES.otherInfo]}
                 </span>
                 <span className="tooltiptext">
                   11 numeric characters. Enter dollars & cents.
@@ -852,7 +685,6 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
                   className="remove-other-field-button"
                   onClick={() => {
                     setOtherFields(otherFields.filter((f) => f !== field));
-                    // TODO: test this
                     formData.otherInfo[field as keyof OtherInfo] = '';
                   }}
                 >
@@ -874,7 +706,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
             <option key="none" value="none">
               Select an Other Field
             </option>
-            {Object.entries(otherFieldsTitles)
+            {Object.entries(FIELD_TITLES.otherInfo)
               .filter(([key]) => !otherFields.includes(key))
               .map(([key, title]) => (
                 <option key={key} value={key}>
