@@ -1,0 +1,30 @@
+.popup-content-container {
+  width: 700px;
+  height: 500px;
+
+
+  .file-input {
+    padding: 8px 12px;
+    display: block;
+    // width: 100%;
+    font-size: small;
+    color: dimgray;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #f8f8f8;
+    overflow: hidden;
+
+    #file-upload-button {
+      border: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.key-selector {
+  width: 300px;
+}

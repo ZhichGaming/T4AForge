@@ -273,7 +273,7 @@ function T4ASummary({
       <PresetPopup
         presetType="payer"
         formData={summaryData}
-        trigger={<button type="button" className='preset-button'>Presets</button>}
+        trigger={<button type="button" className='pre-form-button'>Presets</button>}
         loadPreset={handleLoadPreset}
       />
       <div className="form-section">
@@ -452,7 +452,7 @@ function T4ASummary({
               value={summaryData.payerAddress.pstl_cd}
               onChange={handleInputChange}
               maxLength={10}
-              pattern="^[a-zA-Z0-9]{10}$"
+              pattern="^[a-zA-Z0-9 ]{1,10}$"
             />
           </label>
         </div>

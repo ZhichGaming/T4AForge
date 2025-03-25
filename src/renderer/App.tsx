@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.scss';
-import T619FormData from './types/T619.types';
+import T619Data from './types/T619.types';
 import { T4ASlipData, T4ASummaryData } from './types/T4A.types';
 import { Sidebar, Menu, SubMenu, MenuItem } from 'react-pro-sidebar';
 import Icon from './components/Icon';
@@ -50,80 +50,9 @@ async function createNewSubmission(year: number): Promise<SubmissionRecord> {
 
   const submission: SubmissionRecord = {
     id: id,
-    t619: {
-      accountType: 'bn9',
-      bn9: '',
-      bn15: '',
-      trust: '',
-      nr4: '',
-      RepID: '',
-      sbmt_ref_id: id,
-      summ_cnt: '1',
-      lang_cd: 'E',
-      transmitterName: {
-        l1_nm: '',
-      },
-      TransmitterCountryCode: 'CAN',
-      contact: {
-        cntc_nm: '',
-        cntc_area_cd: '',
-        cntc_phn_nbr: '',
-        cntc_extn_nbr: '',
-        cntc_email_area: '',
-        sec_cntc_email_area: '',
-      },
-    },
+    t619: new T619Data(),
     t4a: [],
-    t4aSummary: {
-      bn: '',
-      payerName: {
-        l1_nm: '',
-        l2_nm: '',
-        l3_nm: '',
-      },
-      payerAddress: {
-        addr_l1_txt: '',
-        addr_l2_txt: '',
-        cty_nm: '',
-        prov_cd: '',
-        cntry_cd: '',
-        pstl_cd: '',
-      },
-      contact: {
-        cntc_nm: '',
-        cntc_area_cd: '',
-        cntc_phn_nbr: '',
-        cntc_extn_nbr: '',
-      },
-      tx_yr: year.toString(),
-      slp_cnt: '',
-      rppNumber: {
-        rpp_rgst_1_nbr: '',
-        rpp_rgst_2_nbr: '',
-        rpp_rgst_3_nbr: '',
-      },
-      proprietorSin: {
-        pprtr_1_sin: '',
-        pprtr_2_sin: '',
-      },
-      rpt_tcd: 'O',
-      fileramendmentnote: '',
-      totalAmounts: {
-        tot_pens_spran_amt: '',
-        tot_lsp_amt: '',
-        tot_self_cmsn_amt: '',
-        tot_ptrng_aloc_amt: '',
-        tot_past_srvc_amt: '',
-        tot_annty_incamt: '',
-        totr_incamt: '',
-        tot_itx_dedn_amt: '',
-        tot_padj_amt: '',
-        tot_resp_aip_amt: '',
-        tot_resp_amt: '',
-        rpt_tot_fee_srvc_amt: '',
-        rpt_tot_oth_info_amt: '',
-      },
-    }
+    t4aSummary: new T4ASummaryData(year.toString()),
   }
 
   await window.manageSubmissions.setSubmission(year, submission);
@@ -169,7 +98,7 @@ function escapeXmlSpecialChars(str: string) {
  * getXML(t619FormData, t4aSlips, t4aSummary);
  * ```
  */
-function getXML(t619FormData: T619FormData, t4aSlips: T4ASlipData[], t4aSummary: T4ASummaryData) {
+function getXML(t619FormData: T619Data, t4aSlips: T4ASlipData[], t4aSummary: T4ASummaryData) {
   const slipsXml = t4aSlips
     .map(
       (slip) => `
@@ -350,7 +279,7 @@ function App() {
 
   const [activeFormIdentifier, setActiveFormIdentifier] = useState<string>('T619');
 
-  const [t619FormData, setT619FormData] = useState<T619FormData | null>(null);
+  const [t619FormData, setT619FormData] = useState<T619Data | null>(null);
   const [t4aSlips, setT4aSlips] = useState<T4ASlipData[] | null>(null);
   const [t4aSummary, setT4aSummary] = useState<T4ASummaryData | null>(null);
 
