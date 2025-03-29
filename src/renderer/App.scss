@@ -4,6 +4,16 @@ body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+*::-webkit-scrollbar {
+  width: 6px;               /* width of the entire scrollbar */
+  height: 6px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: lightgray;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+}
+
 .app {
   display: flex;
   height: 100vh;
