@@ -6,7 +6,7 @@
  * @param matches - An array of strings to search for.
  * @returns `true` if any string in `matches` is found in `list` (case-insensitive), otherwise `false`.
  */
-export default function matchMultiple(list: string[], matches: string[]) {
+export default function findFirstMatch(list: string[], matches: string[]) {
   for (const el of list) {
     const cleanedEl = el.toLowerCase().replace(/[:\-_]/gm, "");
 

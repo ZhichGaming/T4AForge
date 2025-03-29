@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
 import "./CSVPopup.scss"
-import matchMultiple from "../utils/matchMultiple";
-import { T4A_DYNAMIC_FIELD_MAPPINGS, T4A_FIELD_MAPPINGS } from "../utils/fieldMappings";
+import findFirstMatch from "../utils/findFirstMatch";
+import { T4A_DYNAMIC_FIELD_MAPPINGS, T4A_FIELD_MAPPINGS } from "../utils/FIELD_MAPPINGS";
 import { DYNAMIC_FIELD_TITLES, FIELD_TITLES } from "../utils/FIELD_TITLES";
 import access from "../utils/access";
 import { T4ASlipDynamicKeys, T4ASlipKeys } from "../types/T4A.types";
@@ -22,7 +22,7 @@ async function extractFieldsFromCSV(csvPath: string): Promise<{ [key: string]: (
       ? T4A_FIELD_MAPPINGS[key][keyOfKey] as string[]
       : T4A_FIELD_MAPPINGS[key] as string[];
 
-    const matchedColumn = matchMultiple(columns, mapping);
+    const matchedColumn = findFirstMatch(columns, mapping);
 
     if (!matchedColumn) return;
 
@@ -42,7 +42,7 @@ async function extractFieldsFromCSV(csvPath: string): Promise<{ [key: string]: (
   assignKey('recipientCorpName', 'l1_nm')
   assignKey('recipientCorpName', 'l2_nm')
 
-  const dynamicNameMatch = matchMultiple(columns, T4A_DYNAMIC_FIELD_MAPPINGS.recipientName)
+  const dynamicNameMatch = findFirstMatch(columns, T4A_DYNAMIC_FIELD_MAPPINGS.recipientName)
   if (dynamicNameMatch) {
     keys[dynamicNameMatch] = ["recipientName", "recipientCorpName"]
     columns.splice(columns.indexOf(dynamicNameMatch), 1)
@@ -57,7 +57,7 @@ async function extractFieldsFromCSV(csvPath: string): Promise<{ [key: string]: (
     assignKey('recipientAddress', key)
   }
 
-  const dynamicAddressMatch = matchMultiple(columns, T4A_DYNAMIC_FIELD_MAPPINGS.recipientAddress)
+  const dynamicAddressMatch = findFirstMatch(columns, T4A_DYNAMIC_FIELD_MAPPINGS.recipientAddress)
   if (dynamicAddressMatch) {
     keys[dynamicAddressMatch] = ["recipientAddress"]
     columns.splice(columns.indexOf(dynamicAddressMatch), 1)
