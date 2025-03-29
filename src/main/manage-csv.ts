@@ -8,7 +8,7 @@ export async function getCSV(path: string) {
     .pipe(parse());
 
   for await (const record of parser) {
-    records.push(record);
+    records.push(record as string[]);
   }
 
   return records;
