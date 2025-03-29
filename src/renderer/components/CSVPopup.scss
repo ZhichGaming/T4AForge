@@ -2,6 +2,8 @@
   width: 700px;
   height: 500px;
 
+  display: flex;
+  flex-direction: column;
 
   .file-input {
     padding: 8px 12px;
@@ -21,6 +23,41 @@
 
     &:focus {
       outline: none;
+    }
+  }
+
+  .config-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .list {
+      // height: 100%;
+      flex-grow: 1;
+      overflow: scroll;
+      max-height: 210px; // Set a maximum height to prevent it from pushing other elements
+    }
+  }
+
+  .confirm-container {
+    flex-grow: 1;
+    overflow: scroll;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  table {
+    white-space: nowrap;
+    text-align: left;
+
+    td,th {
+      padding: 8px 12px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f8f8f8;
+      font-weight: bold;
     }
   }
 }
