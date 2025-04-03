@@ -384,7 +384,7 @@ function App() {
         <h1 className='sidebar-title'>T4A Forge</h1>
         <hr />
 
-        <Menu>
+        <Menu className='sidebar-menu'>
           {submissionsList.map((submission) => (
             <SubMenu label={submission.year.toString()} key={submission.year.toString()}>
               {submission.submissions.map((sub) => (
