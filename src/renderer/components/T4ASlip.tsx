@@ -87,6 +87,14 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
       }
     });
 
+    if (
+      formData.sin === '000000000' &&
+      formData.rcpnt_bn === '000000000RT0000'
+    ) {
+      patternErrors.push('sin');
+      patternErrors.push('rcpnt_bn');
+    }
+
     return { requiredErrors, patternErrors };
   };
 
