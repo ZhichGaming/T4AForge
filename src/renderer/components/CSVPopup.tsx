@@ -145,9 +145,10 @@ function buildT4aSlips(
 
 export default function CSVPopup() {
   const [isOpen, setIsOpen] = useState(false);
-  const [page, setPage] = useState<'config' | 'loading' | 'confirm'>("config")
+  const [page, setPage] = useState<'config' | 'confirm'>('config');
   const [csv, setCSV] = useState<string[][]>();
   const [mappingKeys, setMappingKeys] = useState<{ [key: string]: string }>({});
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [fieldList, setFieldList] = useState<string[]>([]);
   const [slips, setSlips] = useState<T4ASlipData[]>([]);
@@ -158,16 +159,8 @@ export default function CSVPopup() {
   };
 
   const nextPage = () => {
-    if (page == "loading") {
-      setPage("confirm")
-    }
-
-    if (page == "config" && findFirstMatch(Object.values(mappingKeys), Object.keys(DYNAMIC_FIELD_TITLES))) {
-      setPage("loading")
-    } else if (page == "config") {
-      setPage("confirm")
-    }
-  }
+    setPage('confirm');
+  };
 
   const closeModal = () => {
     setIsOpen(false);
@@ -185,13 +178,14 @@ export default function CSVPopup() {
 
   return (
     <>
-      <button type="button" className='pre-form-button' onClick={() => setIsOpen(true)}>Import CSV</button>
-      <Popup
-        open={isOpen}
-        onClose={closeModal}
-        modal
-        nested
+      <button
+        type="button"
+        className="pre-form-button"
+        onClick={() => setIsOpen(true)}
       >
+        Import CSV
+      </button>
+      <Popup open={isOpen} onClose={closeModal} modal nested>
         <div className="popup-content-container">
           <h2>Import CSV</h2>
           <hr />
