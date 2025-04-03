@@ -50,6 +50,15 @@
     white-space: nowrap;
     text-align: left;
 
+    .table-row-index {
+      color: gray;
+      font-size: small;
+      text-align: center;
+      // padding: 0px;
+      border-right: 1px solid #ddd;
+      background-color: #f8f8f8;
+    }
+
     td,th {
       padding: 8px 12px;
       border-bottom: 1px solid #ddd;

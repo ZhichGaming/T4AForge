@@ -27,7 +27,7 @@ body {
     *::-webkit-scrollbar {
       height: 0;
     }
-    
+
     .sidebar-menu {
       overflow: scroll;
       flex-grow: 1;
@@ -162,6 +162,12 @@ button {
     box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
     outline: 0;
   }
+}
+
+button:disabled {
+  background-color: #f8f8f8;
+  color: #6c757d;
+  cursor: auto;
 }
 
 button.destructive {
