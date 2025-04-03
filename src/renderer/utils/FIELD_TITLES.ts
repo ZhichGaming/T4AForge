@@ -105,9 +105,3 @@ export const FIELD_TITLES: T4ASlipKeys = {
     pst_dctrl_fshp_amt: 'Postdoctoral Fellowship Income (Code 210)',
   },
 };
-
-export const DYNAMIC_FIELD_TITLES: T4ASlipDynamicKeys = {
-  recipientName: 'Recipient Name',
-  recipientCorpName: 'Recipient Corporation Name',
-  recipientAddress: 'Recipient Address',
-}
