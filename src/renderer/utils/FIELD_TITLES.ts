@@ -1,4 +1,4 @@
-import { T4ASlipDynamicKeys, T4ASlipKeys } from "../types/T4A.types";
+import { T4ASlipDynamicKeys, T4ASlipKeys } from '../types/T4A.types';
 
 export const FIELD_TITLES: T4ASlipKeys = {
   recipientType: 'Recipient Type',
@@ -103,7 +103,7 @@ export const FIELD_TITLES: T4ASlipKeys = {
       'Repayment of COVID-19 Financial Assistance (Code 201)',
     oas_lump_sum_pamt: 'One-time Payment for Older Seniors (Code 205)',
     pst_dctrl_fshp_amt: 'Postdoctoral Fellowship Income (Code 210)',
-  }
+  },
 };
 
 export const DYNAMIC_FIELD_TITLES: T4ASlipDynamicKeys = {

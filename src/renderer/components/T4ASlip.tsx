@@ -665,7 +665,11 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
             <label htmlFor={`otherInfo.${field}`}>
               <span className="tooltip">
                 <span className="field-title">
-                  {FIELD_TITLES.otherInfo[field as keyof typeof FIELD_TITLES.otherInfo]}
+                  {
+                    FIELD_TITLES.otherInfo[
+                      field as keyof typeof FIELD_TITLES.otherInfo
+                    ]
+                  }
                 </span>
                 <span className="tooltiptext">
                   11 numeric characters. Enter dollars & cents.
