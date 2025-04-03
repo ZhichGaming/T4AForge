@@ -9,6 +9,43 @@ interface T4ASlipProps {
   editingSlip: T4ASlipData | null;
 }
 
+export const validateForm = (formData: T4ASlipData): {
+  requiredErrors: string[];
+  patternErrors: string[];
+} => {
+  const inputs =
+    document.querySelectorAll<HTMLInputElement>('#t4a-slip input');
+
+  const requiredErrors: string[] = [];
+  const patternErrors: string[] = [];
+
+  inputs.forEach((input) => {
+    if (input.required && input.value === '') {
+      requiredErrors.push(input.name);
+    } else if (
+      input.required &&
+      !new RegExp(input.pattern).test(input.value)
+    ) {
+      patternErrors.push(input.name);
+    } else if (
+      input.value !== '' &&
+      !new RegExp(input.pattern).test(input.value)
+    ) {
+      patternErrors.push(input.name);
+    }
+  });
+
+  if (
+    formData.sin === '000000000' &&
+    formData.rcpnt_bn === '000000000RT0000'
+  ) {
+    patternErrors.push('sin');
+    patternErrors.push('rcpnt_bn');
+  }
+
+  return { requiredErrors, patternErrors };
+};
+
 function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
   const [formData, setFormData] = useState<T4ASlipData>(
     editingSlip || new T4ASlipData(),
@@ -62,42 +99,6 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
     }));
   };
 
-  const validateForm = (): {
-    requiredErrors: string[];
-    patternErrors: string[];
-  } => {
-    const inputs =
-      document.querySelectorAll<HTMLInputElement>('#t4a-slip input');
-    const requiredErrors: string[] = [];
-    const patternErrors: string[] = [];
-
-    inputs.forEach((input) => {
-      if (input.required && input.value === '') {
-        requiredErrors.push(input.name);
-      } else if (
-        input.required &&
-        !new RegExp(input.pattern).test(input.value)
-      ) {
-        patternErrors.push(input.name);
-      } else if (
-        input.value !== '' &&
-        !new RegExp(input.pattern).test(input.value)
-      ) {
-        patternErrors.push(input.name);
-      }
-    });
-
-    if (
-      formData.sin === '000000000' &&
-      formData.rcpnt_bn === '000000000RT0000'
-    ) {
-      patternErrors.push('sin');
-      patternErrors.push('rcpnt_bn');
-    }
-
-    return { requiredErrors, patternErrors };
-  };
-
   const getFieldTitle = (field: string) => {
     const input = document.getElementById(field) as HTMLInputElement;
     return (
@@ -106,7 +107,7 @@ function T4ASlip({ onSlipComplete, editingSlip }: T4ASlipProps) {
   };
 
   const handleSubmit = () => {
-    const { requiredErrors, patternErrors } = validateForm();
+    const { requiredErrors, patternErrors } = validateForm(formData);
     const requiredErrorsFields = requiredErrors.map(getFieldTitle);
     const patternErrorsFields = patternErrors.map(getFieldTitle);
 

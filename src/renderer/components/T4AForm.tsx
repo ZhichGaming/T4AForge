@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { T4ASlipData } from '../types/T4A.types';
-import T4ASlip from './T4ASlip';
+import T4ASlip, { validateForm } from './T4ASlip';
 import './Form.scss';
 import CSVPopup from './CSVPopup';
+import { useStateCallback } from '../hooks/useStateCallback';
 
 function T4AForm({
   slips,
@@ -15,9 +16,12 @@ function T4AForm({
   nextStep: () => void;
 }) {
   const [showSlipForm, setShowSlipForm] = useState(false);
+  const [showImportPopup, setShowImportPopup] = useState(false);
   const [editingSlipIndex, setEditingSlipIndex] = useState<number | null>(null);
-  const [editingSlip, setEditingSlip] = useState<T4ASlipData | null>(null);
+  const [editingSlip, setEditingSlip] = useStateCallback<T4ASlipData | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // const [erroredForms, setErroredForms] = useState<number[]>([]);
 
   const handleSlipComplete = (slipData: T4ASlipData) => {
     if (editingSlipIndex !== null) {
@@ -67,12 +71,50 @@ function T4AForm({
     nextStep();
   };
 
-  const onImportComplete = (importedSlips: T4ASlipData[]) => {
-    setSlips((prev) => {
-      if (prev === null) return null;
-      return [...prev, ...importedSlips];
-    });
+  const onImportComplete = async (importedSlips: T4ASlipData[]) => {
+    const errors = await recursiveValidateForm(0, importedSlips);
+
+    if (errors.length === 0) {
+      setSlips((prev) => {
+        if (prev === null) return null;
+        return [...prev, ...importedSlips];
+      });
+    }
+
+    return errors.length > 0 ? `Please fix the following slips: ${errors.join(", ")}` : ''
   };
+
+  const recursiveValidateForm = async (index: number, slips: T4ASlipData[]): Promise<number[]> => {
+    if (index >= slips.length) {
+      setEditingSlipIndex(null);
+      setEditingSlip(null);
+
+      return [];
+    }
+
+    const res = await new Promise<number[]>((resolve) => {
+      setEditingSlip(slips[index], async (state) => {
+        if (state === null) return;
+
+        const { requiredErrors, patternErrors } = validateForm(state);
+
+        const isErrored = requiredErrors.length > 0 || patternErrors.length > 0
+
+        setShowSlipForm(false);
+
+        await new Promise(unsleep => setTimeout(unsleep, 100));
+
+        const previousErrored = await recursiveValidateForm(index + 1, slips)
+        const totalErrored = isErrored ? [...previousErrored, index] : [...previousErrored]
+
+        resolve(totalErrored);
+      })
+
+      setShowSlipForm(true);
+    })
+
+    return res
+  }
 
   return (
     <div className="form">
@@ -84,7 +126,13 @@ function T4AForm({
       ) : (
         <>
         <h2>T4A Slips</h2>
-        <CSVPopup onImportComplete={onImportComplete} />
+        <button
+          type="button"
+          className="pre-form-button"
+          onClick={() => setShowImportPopup(true)}
+        >
+          Import CSV
+        </button>
         <ul className="list slips-list">
           {slips.map((slip, index) => (
             <li className="slip-item" key={uuidv4()}>
@@ -115,7 +163,9 @@ function T4AForm({
         </div>
         </>
       )}
-    </div>
+
+      <CSVPopup isOpen={showImportPopup} setIsOpen={setShowImportPopup} tryImport={onImportComplete} />
+  </div>
   );
 }
 

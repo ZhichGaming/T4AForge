@@ -143,12 +143,15 @@ function buildT4aSlips(
   return slips;
 }
 
-export default function CSVPopup({ onImportComplete }: { onImportComplete: (slips: T4ASlipData[]) => void }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function CSVPopup(
+  { isOpen, setIsOpen, tryImport }:
+  { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, tryImport: (slips: T4ASlipData[]) => Promise<string> })
+  {
   const [page, setPage] = useState<'config' | 'confirm'>('config');
   const [csv, setCSV] = useState<string[][]>();
   const [mappingKeys, setMappingKeys] = useState<{ [key: string]: string }>({});
-  const [errorMessage, setErrorMessage] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [disabled, setDisabled] = useState(false);
 
   const [fieldList, setFieldList] = useState<string[]>([]);
   const [slips, setSlips] = useState<T4ASlipData[]>([]);
@@ -159,7 +162,7 @@ export default function CSVPopup({ onImportComplete }: { onImportComplete: (slip
   };
 
   const nextPage = () => {
-    setPage('confirm');
+
   };
 
   const closeModal = () => {
@@ -176,27 +179,28 @@ export default function CSVPopup({ onImportComplete }: { onImportComplete: (slip
     setSlips(buildT4aSlips(csv || [], mappingKeys, newFieldList));
   }, [csv, mappingKeys]);
 
-  const confirmImport = () => {
+  const confirmImport = async () => {
     if (slips.length === 0) {
-      setErrorMessage('No slips imported');
+      setStatusMessage('No slips imported');
       return;
     }
 
-    setErrorMessage('');
+    setStatusMessage('Validating, please wait.');
+    setDisabled(true)
 
-    setIsOpen(false);
-    onImportComplete(slips);
+    const importResult = await tryImport(slips);
+    setDisabled(false)
+
+    if (importResult) {
+      setStatusMessage(importResult);
+    } else {
+      setStatusMessage('')
+      setIsOpen(false);
+    }
   };
 
   return (
     <>
-      <button
-        type="button"
-        className="pre-form-button"
-        onClick={() => setIsOpen(true)}
-      >
-        Import CSV
-      </button>
       <Popup open={isOpen} onClose={closeModal} modal nested>
         <div className="popup-content-container">
           <h2>Import CSV</h2>
@@ -267,7 +271,7 @@ export default function CSVPopup({ onImportComplete }: { onImportComplete: (slip
                 <button type="button" className="cancel" onClick={closeModal}>
                   Cancel
                 </button>
-                <button type="button" className="next" onClick={nextPage}>
+                <button type="button" className="next" onClick={() => setPage('confirm')}>
                   Next
                 </button>
               </div>
@@ -278,6 +282,7 @@ export default function CSVPopup({ onImportComplete }: { onImportComplete: (slip
                 <table>
                   <thead>
                     <tr>
+                      <th className="table-row-index"></th>
                       {fieldList.map((cell, i) => (
                         <th key={i}>{access(cell, FIELD_TITLES)}</th>
                       ))}
@@ -286,6 +291,8 @@ export default function CSVPopup({ onImportComplete }: { onImportComplete: (slip
                   <tbody>
                     {slips.map((slip, i) => (
                       <tr key={i}>
+                        <td className="table-row-index">{i}</td>
+
                         {fieldList.map((cell, i) => (
                           <td key={i}>{access(cell, slip)}</td>
                         ))}
@@ -295,15 +302,16 @@ export default function CSVPopup({ onImportComplete }: { onImportComplete: (slip
                 </table>
               </div>
               <hr />
-              <p className="error-message">{errorMessage}</p>
+              <p className="error-message">{statusMessage}</p>
               <div className="actions">
-                <button type="button" className="cancel" onClick={closeModal}>
-                  Cancel
+                <button type="button" className="cancel" onClick={() => setPage('config')} disabled={disabled}>
+                  Previous
                 </button>
                 <button
                   type="button"
                   className="confirm"
                   onClick={confirmImport}
+                  disabled={disabled}
                 >
                   Confirm
                 </button>
