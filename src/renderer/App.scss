@@ -18,13 +18,29 @@ body {
   display: flex;
   height: 100vh;
 
-  .sidebar-title {
-    padding: 0 20px;
-  }
+  // MARK: Sidebar
+  // inner div present when rendered
+  .sidebar > div {
+    display: flex;
+    flex-direction: column;
 
-  .sidebar-submission-label {
-    // font-size: small;
-    color: gray;
+    *::-webkit-scrollbar {
+      height: 0;
+    }
+    
+    .sidebar-menu {
+      overflow: scroll;
+      flex-grow: 1;
+    }
+
+    .sidebar-title {
+      padding: 0 20px;
+    }
+
+    .sidebar-submission-label {
+      // font-size: small;
+      color: gray;
+    }
   }
 
   .start-content {
@@ -33,6 +49,7 @@ body {
 
   .content {
     flex-grow: 1;
+    overflow: scroll;
 
     .header-nav {
       display: flex;
