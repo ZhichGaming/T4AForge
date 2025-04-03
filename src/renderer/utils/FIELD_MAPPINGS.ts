@@ -102,8 +102,3 @@ export const T4A_FIELD_MAPPINGS = {
     spp_sps_cntrbr_sin: ['Spousal Contributor SIN'],
   },
 };
-
-export const T4A_DYNAMIC_FIELD_MAPPINGS = {
-  recipientName: ["Name"],
-  recipientAddress: ["Address"],
-};

@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
-import Popup from "reactjs-popup";
-import "./CSVPopup.scss"
-import findFirstMatch from "../utils/findFirstMatch";
-import { T4A_DYNAMIC_FIELD_MAPPINGS, T4A_FIELD_MAPPINGS } from "../utils/FIELD_MAPPINGS";
-import { DYNAMIC_FIELD_TITLES, FIELD_TITLES } from "../utils/FIELD_TITLES";
-import { T4ASlipData, T4ASlipDynamicKeys, T4ASlipKeys } from "../types/T4A.types";
-import access from "../utils/access";
+import { useEffect, useState } from 'react';
+import Popup from 'reactjs-popup';
+import './CSVPopup.scss';
+import findFirstMatch from '../utils/findFirstMatch';
+import { T4A_FIELD_MAPPINGS } from '../utils/FIELD_MAPPINGS';
+import { FIELD_TITLES } from '../utils/FIELD_TITLES';
+import {
+  T4ASlipData,
+  T4ASlipDynamicKeys,
+  T4ASlipKeys,
+} from '../types/T4A.types';
+import access from '../utils/access';
 
 async function getCSV(csvPath: string) {
   const csv = await window.manageCSV.getCSV(csvPath);
@@ -44,12 +48,6 @@ async function extractColumnsFromCSV(
   assignKey('recipientName', 'gvn_nm');
   assignKey('recipientName', 'init');
 
-
-  const dynamicNameMatch = findFirstMatch(columns, T4A_DYNAMIC_FIELD_MAPPINGS.recipientName)
-  if (dynamicNameMatch) {
-    keys[dynamicNameMatch] = "recipientName"
-    columns.splice(columns.indexOf(dynamicNameMatch), 1)
-  }
   assignKey('recipientCorpName', 'l1_nm');
   assignKey('recipientCorpName', 'l2_nm');
 
@@ -58,11 +56,6 @@ async function extractColumnsFromCSV(
   assignKey('rcpnt_bn');
 
   // Address
-
-  const dynamicAddressMatch = findFirstMatch(columns, T4A_DYNAMIC_FIELD_MAPPINGS.recipientAddress)
-  if (dynamicAddressMatch) {
-    keys[dynamicAddressMatch] = "recipientAddress"
-    columns.splice(columns.indexOf(dynamicAddressMatch), 1)
   for (const key of Object.keys(
     T4A_FIELD_MAPPINGS.recipientAddress,
   ) as (keyof T4ASlipKeys['recipientAddress'])[]) {
@@ -205,92 +198,112 @@ export default function CSVPopup() {
           {page == 'config' ? (
             <div className="config-container">
               <input
-              id='csv-input'
-              type="file"
-              onChange={(e) => {
-                const path = (document.getElementById('csv-input') as HTMLInputElement).files?.[0]?.path
+                id="csv-input"
+                type="file"
+                onChange={(e) => {
+                  const path = (
+                    document.getElementById('csv-input') as HTMLInputElement
+                  ).files?.[0]?.path;
 
-                if (!path) return
+                  if (!path) return;
 
-                getCSV(path).then((csv) => {
-                  setCSV(csv)
-                  onFileImport(csv)
-                })
-              }}
-              className='file-input'
-              accept=".csv" />
-            <p>CSV Column Titles</p>
-            <ul className='list'>
-              {Object.entries(mappingKeys).map(([column, key]) => (
-                <li key={column}>
-                  <span>{column}</span>
-                  <select
-                    className="key-selector"
-                    value={key}
-                    onChange={(e) => {
-                      const value = e.target.value
-                      setMappingKeys({ ...mappingKeys, [column]: value as (keyof T4ASlipKeys) | (keyof T4ASlipDynamicKeys) })
-                    }}>
-                    {Object.entries(FIELD_TITLES).map(([key, value]) => {
-                      if (value instanceof Object) {
-                        return Object.entries(value).map(([sKey, sValue]) => <option value={key + "." + sKey} key={key + "." + sKey}>{String(sValue)}</option>)
-                      }
+                  getCSV(path).then((csv) => {
+                    setCSV(csv);
+                    onFileImport(csv);
+                  });
+                }}
+                className="file-input"
+                accept=".csv"
+              />
+              <p>CSV Column Titles</p>
+              <ul className="list">
+                {Object.entries(mappingKeys).map(([column, key]) => (
+                  <li key={column}>
+                    <span>{column}</span>
+                    <select
+                      className="key-selector"
+                      value={key}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setMappingKeys({
+                          ...mappingKeys,
+                          [column]: value as
+                            | keyof T4ASlipKeys
+                            | keyof T4ASlipDynamicKeys,
+                        });
+                      }}
+                    >
+                      {Object.entries(FIELD_TITLES).map(([key, value]) => {
+                        if (value instanceof Object) {
+                          return Object.entries(value).map(([sKey, sValue]) => (
+                            <option
+                              value={key + '.' + sKey}
+                              key={key + '.' + sKey}
+                            >
+                              {String(sValue)}
+                            </option>
+                          ));
+                        }
 
-                      return <option value={key} key={key}>{value}</option>
-                    })}
-                    {Object.entries(DYNAMIC_FIELD_TITLES).map(([key, value]) => {
-                      if (value instanceof Object) {
-                        return Object.entries(value).map(([sKey, sValue]) => <option value={key + "." + sKey} key={key + "." + sKey}>Dynamic - {String(sValue)}</option>)
-                      }
-
-                      return <option value={key} key={key}>Dynamic - {value}</option>
-                    })}
-                    <option value=''>No match</option>
-                  </select>
-                </li>
-              ))}
-            </ul>
-            <hr />
-            <div className="actions">
-              <button type="button" className='cancel' onClick={closeModal}>Cancel</button>
-              <button type="button" className='next' onClick={nextPage}>Next</button>
+                        return (
+                          <option value={key} key={key}>
+                            {value}
+                          </option>
+                        );
+                      })}
+                      <option value="">No match</option>
+                    </select>
+                  </li>
+                ))}
+              </ul>
+              <hr />
+              <div className="actions">
+                <button type="button" className="cancel" onClick={closeModal}>
+                  Cancel
+                </button>
+                <button type="button" className="next" onClick={nextPage}>
+                  Next
+                </button>
+              </div>
             </div>
-          </div> :
-          <>
-            <div className="confirm-container">
-              <table>
-                <thead>
-                  <tr>
-                    {fieldList.map((cell, i) => (
-                      <th key={i}>{
-                        // TODO: This should be an exclusively normal field title when I'm done with the dynamic fields
-                        access(cell, FIELD_TITLES) instanceof Object ?
-                          access(cell, DYNAMIC_FIELD_TITLES) :
-                          access(cell, FIELD_TITLES)
-                      }</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    slips.map((slip, i) => (
+          ) : (
+            <>
+              <div className="confirm-container">
+                <table>
+                  <thead>
+                    <tr>
+                      {fieldList.map((cell, i) => (
+                        <th key={i}>{access(cell, FIELD_TITLES)}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {slips.map((slip, i) => (
                       <tr key={i}>
                         {fieldList.map((cell, i) => (
                           <td key={i}>{access(cell, slip)}</td>
                         ))}
                       </tr>
-                    ))
-                  }
-                </tbody>
-              </table>
-            </div>
-            <hr />
-            <div className="actions">
-              <button type="button" className='cancel' onClick={closeModal}>Cancel</button>
-              {/* <button type="button" className='next' onClick={nextPage}>Next</button> */}
-            </div>
-          </>
-          }
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <hr />
+              <p className="error-message">{errorMessage}</p>
+              <div className="actions">
+                <button type="button" className="cancel" onClick={closeModal}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="confirm"
+                  onClick={confirmImport}
+                >
+                  Confirm
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </Popup>
     </>
