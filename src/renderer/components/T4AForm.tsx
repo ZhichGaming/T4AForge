@@ -67,6 +67,13 @@ function T4AForm({
     nextStep();
   };
 
+  const onImportComplete = (importedSlips: T4ASlipData[]) => {
+    setSlips((prev) => {
+      if (prev === null) return null;
+      return [...prev, ...importedSlips];
+    });
+  };
+
   return (
     <div className="form">
       {showSlipForm ? (
@@ -77,7 +84,7 @@ function T4AForm({
       ) : (
         <>
         <h2>T4A Slips</h2>
-        <CSVPopup />
+        <CSVPopup onImportComplete={onImportComplete} />
         <ul className="list slips-list">
           {slips.map((slip, index) => (
             <li className="slip-item" key={uuidv4()}>
