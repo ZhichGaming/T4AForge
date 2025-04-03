@@ -139,6 +139,10 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    ipcMain.handle('getVersion', () => {
+      return app.getVersion();
+    });
+    
     createPresetDirectories();
     createSubmissionDirectories();
 

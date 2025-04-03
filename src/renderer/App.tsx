@@ -274,6 +274,8 @@ function downloadXML(xml: string, filename: string) {
 }
 
 function App() {
+  const [version, setVersion] = useState<string>('');
+
   const [submissionsList, setSubmissionsList] = useState<SubmissionYearRecord[]>([]);
   const [selectedSubmissionId, setSelectedSubmissionId] = useState<[number, string] | null>(null);
 
@@ -344,6 +346,8 @@ function App() {
 
   useEffect(() => {
     getSubmissions();
+
+    window.getVersion().then(res => setVersion(res));
   }, []);
 
   useEffect(() => {
@@ -428,6 +432,7 @@ function App() {
             className='collapse-sidebar-button'>
               Collapse Sidebar
           </MenuItem>
+          <p className='footer-text'>Version {version} - Apr 2025<br /><br />© 2025 ZhichGaming</p>
         </Menu>
       </Sidebar>
       <div className="content">

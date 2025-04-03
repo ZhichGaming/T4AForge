@@ -6,6 +6,9 @@ import {
   TransmitterPreset,
 } from '../renderer/types/Presets.types';
 
+const getVersion: () => Promise<string> = () =>
+  ipcRenderer.invoke('getVersion');
+
 const managePresets = {
   getPresets: (presetType: 'transmitter' | 'payer') =>
     ipcRenderer.invoke('getPresets', presetType),
@@ -34,10 +37,12 @@ const manageCSV = {
   getCSV: (filePath: string) => ipcRenderer.invoke('getCSV', filePath),
 };
 
+contextBridge.exposeInMainWorld('getVersion', getVersion);
 contextBridge.exposeInMainWorld('managePresets', managePresets);
 contextBridge.exposeInMainWorld('manageSubmissions', manageSubmissions);
 contextBridge.exposeInMainWorld('manageCSV', manageCSV);
 
+export type GetVersion = typeof getVersion;
 export type ManagePresets = typeof managePresets;
 export type ManageSubmissions = typeof manageSubmissions;
 export type ManageCSV = typeof manageCSV;
