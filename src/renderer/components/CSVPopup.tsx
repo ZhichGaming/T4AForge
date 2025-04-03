@@ -143,7 +143,7 @@ function buildT4aSlips(
   return slips;
 }
 
-export default function CSVPopup() {
+export default function CSVPopup({ onImportComplete }: { onImportComplete: (slips: T4ASlipData[]) => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState<'config' | 'confirm'>('config');
   const [csv, setCSV] = useState<string[][]>();
@@ -175,6 +175,18 @@ export default function CSVPopup() {
 
     setSlips(buildT4aSlips(csv || [], mappingKeys, newFieldList));
   }, [csv, mappingKeys]);
+
+  const confirmImport = () => {
+    if (slips.length === 0) {
+      setErrorMessage('No slips imported');
+      return;
+    }
+
+    setErrorMessage('');
+
+    setIsOpen(false);
+    onImportComplete(slips);
+  };
 
   return (
     <>
