@@ -136,7 +136,7 @@ export class T4ASlipData {
   recipientType: 'individual' | 'corporation' = 'individual';
   recipientName: RecipientName = new RecipientName();
   recipientCorpName: RecipientCorpName = new RecipientCorpName();
-  sin: string = '';
+  sin: string = '000000000';
   rcpnt_bn: string = '000000000RT0000';
   recipientAddress: Address = new Address();
   rcpnt_nbr: string = '';
