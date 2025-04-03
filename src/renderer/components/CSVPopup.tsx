@@ -8,153 +8,161 @@ import { T4ASlipData, T4ASlipDynamicKeys, T4ASlipKeys } from "../types/T4A.types
 import access from "../utils/access";
 
 async function getCSV(csvPath: string) {
-  const csv = await window.manageCSV.getCSV(csvPath)
+  const csv = await window.manageCSV.getCSV(csvPath);
 
-  return csv as string[][]
+  return csv as string[][];
 }
 
-async function extractColumnsFromCSV(csv: string[][]): Promise<{ [key: string]: string }> {
-  const columns = Array.from(csv[0])
-  const keys: { [key: string]: string } = {}
+async function extractColumnsFromCSV(
+  csv: string[][],
+): Promise<{ [key: string]: string }> {
+  const columns = Array.from(csv[0]);
+  const keys: { [key: string]: string } = {};
 
   function assignKey<
     T extends keyof typeof T4A_FIELD_MAPPINGS, // Top-level key
-    K extends keyof typeof T4A_FIELD_MAPPINGS[T] // Nested key
-  >(
-    key: T,
-    keyOfKey?: K
-  ) {
+    K extends keyof (typeof T4A_FIELD_MAPPINGS)[T], // Nested key
+  >(key: T, keyOfKey?: K) {
     const mapping = keyOfKey
-      ? T4A_FIELD_MAPPINGS[key][keyOfKey] as string[]
-      : T4A_FIELD_MAPPINGS[key] as string[];
+      ? (T4A_FIELD_MAPPINGS[key][keyOfKey] as string[])
+      : (T4A_FIELD_MAPPINGS[key] as string[]);
 
     const matchedColumn = findFirstMatch(columns, mapping);
 
     if (!matchedColumn) return;
 
-    columns.splice(columns.indexOf(matchedColumn), 1)
+    columns.splice(columns.indexOf(matchedColumn), 1);
 
     keys[matchedColumn] = keyOfKey ? `${key}.${String(keyOfKey)}` : key;
   }
 
   // Type
-  assignKey('recipientType')
+  assignKey('recipientType');
 
   // Name
-  assignKey('recipientName', 'snm')
-  assignKey('recipientName', 'gvn_nm')
-  assignKey('recipientName', 'init')
+  assignKey('recipientName', 'snm');
+  assignKey('recipientName', 'gvn_nm');
+  assignKey('recipientName', 'init');
 
-  assignKey('recipientCorpName', 'l1_nm')
-  assignKey('recipientCorpName', 'l2_nm')
 
   const dynamicNameMatch = findFirstMatch(columns, T4A_DYNAMIC_FIELD_MAPPINGS.recipientName)
   if (dynamicNameMatch) {
     keys[dynamicNameMatch] = "recipientName"
     columns.splice(columns.indexOf(dynamicNameMatch), 1)
   }
+  assignKey('recipientCorpName', 'l1_nm');
+  assignKey('recipientCorpName', 'l2_nm');
 
   // SIN/BN
-  assignKey('sin')
-  assignKey('rcpnt_bn')
+  assignKey('sin');
+  assignKey('rcpnt_bn');
 
   // Address
-  for (const key of Object.keys(T4A_FIELD_MAPPINGS.recipientAddress) as (keyof T4ASlipKeys['recipientAddress'])[]) {
-    assignKey('recipientAddress', key)
-  }
 
   const dynamicAddressMatch = findFirstMatch(columns, T4A_DYNAMIC_FIELD_MAPPINGS.recipientAddress)
   if (dynamicAddressMatch) {
     keys[dynamicAddressMatch] = "recipientAddress"
     columns.splice(columns.indexOf(dynamicAddressMatch), 1)
+  for (const key of Object.keys(
+    T4A_FIELD_MAPPINGS.recipientAddress,
+  ) as (keyof T4ASlipKeys['recipientAddress'])[]) {
+    assignKey('recipientAddress', key);
   }
 
   // Recipient Number, Payor DNTL, PPLN DPSP
-  assignKey('rcpnt_nbr')
-  assignKey('payr_dntl_ben_rpt_cd')
-  assignKey('ppln_dpsp_rgst_nbr')
+  assignKey('rcpnt_nbr');
+  assignKey('payr_dntl_ben_rpt_cd');
+  assignKey('ppln_dpsp_rgst_nbr');
 
   // Amounts
-  for (const key of Object.keys(T4A_FIELD_MAPPINGS.amounts) as (keyof T4ASlipKeys['amounts'])[]) {
-    assignKey('amounts', key)
+  for (const key of Object.keys(
+    T4A_FIELD_MAPPINGS.amounts,
+  ) as (keyof T4ASlipKeys['amounts'])[]) {
+    assignKey('amounts', key);
   }
 
   // Other Info
-  for (const key of Object.keys(T4A_FIELD_MAPPINGS.otherInfo) as (keyof T4ASlipKeys['otherInfo'])[]) {
-    assignKey('otherInfo', key)
+  for (const key of Object.keys(
+    T4A_FIELD_MAPPINGS.otherInfo,
+  ) as (keyof T4ASlipKeys['otherInfo'])[]) {
+    assignKey('otherInfo', key);
   }
 
   // Remaining columns
   columns.forEach((column) => {
-    keys[column] = ""
-  })
+    keys[column] = '';
+  });
 
-  return keys as { [key: string]: string }
+  return keys as { [key: string]: string };
 }
 
 function getFieldList(titles: string[], mapping: { [key: string]: string }) {
-  const fields: string[] = []
+  const fields: string[] = [];
 
   for (const title of titles) {
-    const key = mapping[title]
+    const key = mapping[title];
 
     if (key.length > 0) {
-      fields.push(key)
+      fields.push(key);
     }
   }
 
-  return fields
+  return fields;
 }
 
-function buildT4aSlips(csv: string[][], mappingKeys: { [key: string]: string }, fieldList: string[]) {
-  const slips: T4ASlipData[] = []
+function buildT4aSlips(
+  csv: string[][],
+  mappingKeys: { [key: string]: string },
+  fieldList: string[],
+) {
+  const slips: T4ASlipData[] = [];
 
   for (let i = 1; i < csv.length; i++) {
-    const row = csv[i]
-    const slip = new T4ASlipData()
+    const row = csv[i];
+    const slip = new T4ASlipData();
 
     for (let j = 0; j < row.length; j++) {
-      const columnKey = mappingKeys[csv[0][j]]
-      const value = row[j]
+      const columnKey = mappingKeys[csv[0][j]];
+      const value = row[j];
 
-      if (!fieldList.includes(columnKey)) continue
-      if (value.length === 0) continue
+      if (!fieldList.includes(columnKey)) continue;
+      if (value.length === 0) continue;
 
-      const splitKey = columnKey.split(".")
+      const splitKey = columnKey.split('.');
 
       if (splitKey.length === 1) {
         if (slip.hasOwnProperty(columnKey)) {
-          (slip[columnKey as keyof T4ASlipData] as any) = value
+          (slip[columnKey as keyof T4ASlipData] as any) = value;
         }
       } else {
-        const parentKey = splitKey[0] as keyof T4ASlipData
-        const childKey = splitKey[1] as keyof T4ASlipData[typeof parentKey]
+        const parentKey = splitKey[0] as keyof T4ASlipData;
+        const childKey = splitKey[1] as keyof T4ASlipData[typeof parentKey];
 
         if (slip[parentKey]) {
-          (slip[parentKey][childKey] as any) = value
+          (slip[parentKey][childKey] as any) = value;
         }
       }
     }
 
-    slips.push(slip)
+    slips.push(slip);
   }
 
-  return slips
+  return slips;
 }
 
 export default function CSVPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState<'config' | 'loading' | 'confirm'>("config")
   const [csv, setCSV] = useState<string[][]>();
-  const [mappingKeys, setMappingKeys] = useState<{ [key: string]: string }>({})
+  const [mappingKeys, setMappingKeys] = useState<{ [key: string]: string }>({});
 
-  const [fieldList, setFieldList] = useState<string[]>([])
-  const [slips, setSlips] = useState<T4ASlipData[]>([])
+  const [fieldList, setFieldList] = useState<string[]>([]);
+  const [slips, setSlips] = useState<T4ASlipData[]>([]);
 
   const onFileImport = async (csv: string[][]) => {
-    const keys = await extractColumnsFromCSV(csv)
-    setMappingKeys(keys)
-  }
+    const keys = await extractColumnsFromCSV(csv);
+    setMappingKeys(keys);
+  };
 
   const nextPage = () => {
     if (page == "loading") {
@@ -169,18 +177,18 @@ export default function CSVPopup() {
   }
 
   const closeModal = () => {
-    setIsOpen(false)
-    setPage("config")
-    setCSV(undefined)
-    setMappingKeys({})
-  }
+    setIsOpen(false);
+    setPage('config');
+    setCSV(undefined);
+    setMappingKeys({});
+  };
 
   useEffect(() => {
-    const newFieldList = getFieldList(Object.keys(mappingKeys), mappingKeys)
-    setFieldList(newFieldList)
+    const newFieldList = getFieldList(Object.keys(mappingKeys), mappingKeys);
+    setFieldList(newFieldList);
 
-    setSlips(buildT4aSlips(csv || [], mappingKeys, newFieldList))
-  }, [csv, mappingKeys])
+    setSlips(buildT4aSlips(csv || [], mappingKeys, newFieldList));
+  }, [csv, mappingKeys]);
 
   return (
     <>
@@ -194,7 +202,7 @@ export default function CSVPopup() {
         <div className="popup-content-container">
           <h2>Import CSV</h2>
           <hr />
-          {page == "config" ?
+          {page == 'config' ? (
             <div className="config-container">
               <input
               id='csv-input'
@@ -286,5 +294,5 @@ export default function CSVPopup() {
         </div>
       </Popup>
     </>
-  )
+  );
 }
