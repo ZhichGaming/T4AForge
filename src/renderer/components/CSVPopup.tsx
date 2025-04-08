@@ -123,16 +123,31 @@ function buildT4aSlips(
 
       const splitKey = columnKey.split('.');
 
+      let formattedValue = value;
+
       if (splitKey.length === 1) {
-        if (slip.hasOwnProperty(columnKey)) {
-          (slip[columnKey as keyof T4ASlipData] as any) = value;
+        const castedKey = columnKey as keyof T4ASlipData;
+
+        if (castedKey === 'sin') {
+          formattedValue = value.replace(/[\-\s]/g, '');
         }
+
+        (slip[castedKey] as any) = formattedValue;
       } else {
         const parentKey = splitKey[0] as keyof T4ASlipData;
         const childKey = splitKey[1] as keyof T4ASlipData[typeof parentKey];
 
+        if (parentKey === 'amounts' || parentKey === 'otherInfo') {
+          const tmp = value.trim();
+          formattedValue = formattedValue.replace(/[^0-9]/g, '');
+
+          if (/[,\.]\d{2}$/.test(tmp)) {
+            formattedValue = formattedValue.replace(/(\d{2})$/, '.$1');
+          }
+        }
+
         if (slip[parentKey]) {
-          (slip[parentKey][childKey] as any) = value;
+          (slip[parentKey][childKey] as any) = formattedValue;
         }
       }
     }
@@ -159,10 +174,6 @@ export default function CSVPopup(
   const onFileImport = async (csv: string[][]) => {
     const keys = await extractColumnsFromCSV(csv);
     setMappingKeys(keys);
-  };
-
-  const nextPage = () => {
-
   };
 
   const closeModal = () => {
