@@ -5,6 +5,8 @@ import T4ASlip, { validateForm } from './T4ASlip';
 import './Form.scss';
 import CSVPopup from './CSVPopup';
 import { useStateCallback } from '../hooks/useStateCallback';
+import access from '../utils/access';
+import { FIELD_TITLES } from '../utils/FIELD_TITLES';
 
 function T4AForm({
   slips,
@@ -74,17 +76,17 @@ function T4AForm({
   const onImportComplete = async (importedSlips: T4ASlipData[]) => {
     const errors = await recursiveValidateForm(0, importedSlips);
 
-    if (errors.length === 0) {
+    if (Object.keys(errors).length === 0) {
       setSlips((prev) => {
         if (prev === null) return null;
         return [...prev, ...importedSlips];
       });
     }
 
-    return errors.length > 0 ? `Please fix the following slips: ${errors.join(", ")}` : ''
+    return errors
   };
 
-  const recursiveValidateForm = async (index: number, slips: T4ASlipData[]): Promise<number[]> => {
+  const recursiveValidateForm = async (index: number, slips: T4ASlipData[]): Promise<{ [key: number]: string[] }> => {
     if (index >= slips.length) {
       setEditingSlipIndex(null);
       setEditingSlip(null);
@@ -92,7 +94,7 @@ function T4AForm({
       return [];
     }
 
-    const res = await new Promise<number[]>((resolve) => {
+    const res = await new Promise<{ [key: number]: string[] }>((resolve) => {
       setEditingSlip(slips[index], async (state) => {
         if (state === null) return;
 
@@ -105,7 +107,12 @@ function T4AForm({
         await new Promise(unsleep => setTimeout(unsleep, 100));
 
         const previousErrored = await recursiveValidateForm(index + 1, slips)
-        const totalErrored = isErrored ? [...previousErrored, index] : [...previousErrored]
+        const totalErrored = isErrored ?
+          { ...previousErrored, [index]: [
+            ...requiredErrors.map((error) => `Required field: ${access(error, FIELD_TITLES)}`),
+            ...patternErrors.map((error) => `Pattern error: ${access(error, FIELD_TITLES)}`)
+          ] } :
+          Object.assign({}, previousErrored);
 
         resolve(totalErrored);
       })

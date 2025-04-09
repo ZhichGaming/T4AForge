@@ -160,7 +160,7 @@ function buildT4aSlips(
 
 export default function CSVPopup(
   { isOpen, setIsOpen, tryImport }:
-  { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, tryImport: (slips: T4ASlipData[]) => Promise<string> })
+  { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, tryImport: (slips: T4ASlipData[]) => Promise<{ [key: number]: string[] }> })
   {
   const [page, setPage] = useState<'config' | 'confirm'>('config');
   const [csv, setCSV] = useState<string[][]>();
@@ -170,6 +170,7 @@ export default function CSVPopup(
 
   const [fieldList, setFieldList] = useState<string[]>([]);
   const [slips, setSlips] = useState<T4ASlipData[]>([]);
+  const [errors, setErrors] = useState<{ [key: number]: string[] }>({});
 
   const onFileImport = async (csv: string[][]) => {
     const keys = await extractColumnsFromCSV(csv);
@@ -181,6 +182,8 @@ export default function CSVPopup(
     setPage('config');
     setCSV(undefined);
     setMappingKeys({});
+    setStatusMessage('');
+    setErrors({});
   };
 
   useEffect(() => {
@@ -203,7 +206,8 @@ export default function CSVPopup(
     setDisabled(false)
 
     if (importResult) {
-      setStatusMessage(importResult);
+      setErrors(importResult);
+      setStatusMessage('Some slips have errors. Please check the list.');
     } else {
       setStatusMessage('')
       setIsOpen(false);
@@ -314,8 +318,33 @@ export default function CSVPopup(
               </div>
               <hr />
               <p className="error-message">{statusMessage}</p>
+
+                <Popup trigger={
+                  <button type="button" className="error-list-button" disabled={Object.keys(errors).length === 0}>
+                    {Object.keys(errors).length} Errors
+                  </button>
+                } modal nested >
+                  <div className="error-popup-container">
+                    {Object.entries(errors).map(([index, error]) => (
+                      <div className='error-list' key={index}>
+                        <span>Slip {index}</span>
+                        <ul>
+                          {error.map((err, i) => (
+                            <li key={i}>{err}</li>
+                          ))}
+                        </ul>
+                        <hr />
+                      </div>
+                    ))}
+                  </div>
+               </Popup>
+
               <div className="actions">
-                <button type="button" className="cancel" onClick={() => setPage('config')} disabled={disabled}>
+                <button type="button" className="cancel" onClick={() => {
+                  setPage('config');
+                  setStatusMessage('');
+                  setErrors({});
+                }} disabled={disabled}>
                   Previous
                 </button>
                 <button
