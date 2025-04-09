@@ -71,6 +71,24 @@
   }
 }
 
+.error-popup-container {
+  width: 400px;
+  height: 300px;
+
+  background: white;
+  border-radius: 8px;
+  overflow-y: scroll;
+
+  .error-list {
+    padding: 2rem;
+    text-align: left;
+  }
+
+  ul {
+    padding-left: 1rem;
+  }
+}
+
 .key-selector {
   width: 300px;
 }
