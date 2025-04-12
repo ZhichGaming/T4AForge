@@ -5,6 +5,8 @@ import {
   PayerPreset,
   TransmitterPreset,
 } from '../renderer/types/Presets.types';
+import { SubmissionRecord } from '../renderer/types/SubmissionStorage.types';
+import { showYearContextMenu } from './manage-submissions';
 
 const getVersion: () => Promise<string> = () =>
   ipcRenderer.invoke('getVersion');
@@ -31,6 +33,16 @@ const manageSubmissions = {
     ipcRenderer.invoke('deleteSubmission', year, id),
   getNextSubmissionId: (year: number) =>
     ipcRenderer.invoke('getNextSubmissionId', year),
+  showYearContextMenu: (
+    year: number,
+  ) => ipcRenderer.invoke('showYearContextMenu', year),
+  showSubmissionContextMenu: (
+    submission: SubmissionRecord,
+    year: number,
+  ) => ipcRenderer.invoke('showSubmissionContextMenu', submission, year),
+  onSubmissionListUpdate: (callback: () => void) => {
+    ipcRenderer.on('update-submission-list', callback);
+  }
 };
 
 const manageCSV = {

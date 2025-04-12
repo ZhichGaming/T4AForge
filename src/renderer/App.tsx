@@ -7,6 +7,7 @@ import Icon from './components/Icon';
 import { SubmissionRecord, SubmissionYearRecord } from './types/SubmissionStorage.types';
 import FormPage from './FormPage';
 import Popup from 'reactjs-popup';
+import { ipcRenderer } from 'electron/renderer';
 
 /**
  * Formats a numeric string as a currency value by ensuring it has exactly two decimal places.
@@ -348,6 +349,10 @@ function App() {
     getSubmissions();
 
     window.getVersion().then(res => setVersion(res));
+
+    window.manageSubmissions.onSubmissionListUpdate(() => {
+      getSubmissions();
+    });
   }, []);
 
   useEffect(() => {
@@ -386,9 +391,22 @@ function App() {
 
         <Menu className='sidebar-menu'>
           {submissionsList.map((submission) => (
-            <SubMenu label={submission.year.toString()} key={submission.year.toString()}>
+            <SubMenu
+              label={
+                <p onContextMenu={(e) => {
+                  e.preventDefault();
+                  window.manageSubmissions.showYearContextMenu(submission.year);
+                }}>{submission.year.toString()}</p>
+              }
+              key={submission.year.toString()}>
               {submission.submissions.map((sub) => (
-                <MenuItem key={sub.id} onClick={() => setSelectedSubmissionId([submission.year, sub.id])}>
+                <MenuItem
+                  key={sub.id}
+                  onClick={() => setSelectedSubmissionId([submission.year, sub.id])}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    window.manageSubmissions.showSubmissionContextMenu(sub, submission.year);
+                  }}>
                   {sub.id} <span className='sidebar-submission-label'>{sub.t4aSummary?.payerName.l1_nm}</span>
                 </MenuItem>
               ))}

@@ -24,8 +24,9 @@ import {
   PayerPreset,
   TransmitterPreset,
 } from '../renderer/types/Presets.types';
-import { createSubmissionDirectories, deleteSubmission, getNextSubmissionId, getSubmissions, setSubmission } from './manage-submissions';
+import { createSubmissionDirectories, deleteSubmission, getNextSubmissionId, getSubmissions, setSubmission, showSubmissionContextMenu, showYearContextMenu } from './manage-submissions';
 import { getCSV } from './manage-csv';
+import { SubmissionRecord } from '../renderer/types/SubmissionStorage.types';
 
 class AppUpdater {
   constructor() {
@@ -178,6 +179,12 @@ app
     ipcMain.handle('getNextSubmissionId', (_, year: number) =>
       getNextSubmissionId(year),
     );
+    ipcMain.handle('showYearContextMenu', (event, year: number) => {
+      showYearContextMenu(event, year);
+    });
+    ipcMain.handle('showSubmissionContextMenu', (event, submission: SubmissionRecord, year: number) => {
+      showSubmissionContextMenu(event, submission, year);
+    });
 
     ipcMain.handle('getCSV', (_, filePath: string) => getCSV(filePath));
 
